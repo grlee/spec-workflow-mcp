@@ -1,0 +1,30 @@
+{
+  "name": "spec-workflow-mcp-marketplace",
+  "owner": {
+    "name": "Pimzino"
+  },
+  "plugins": [
+    {
+      "name": "spec-workflow-mcp",
+      "version": "1.0.0",
+      "description": "MCP server for structured spec-driven development with real-time web dashboard and VSCode extension.",
+      "author": {
+        "name": "Pimzino"
+      },
+      "license": "GPL-3.0",
+      "homepage": "https://github.com/Pimzino/spec-workflow-mcp",
+      "source": "./.claude-plugin"
+    },
+    {
+      "name": "spec-workflow-mcp-with-dashboard",
+      "version": "1.0.0",
+      "description": "MCP server with auto-started dashboard for structured spec-driven development.",
+      "author": {
+        "name": "Pimzino"
+      },
+      "license": "GPL-3.0",
+      "homepage": "https://github.com/Pimzino/spec-workflow-mcp",
+      "source": "./.claude-plugin/with-dashboard"
+    }
+  ]
+}
