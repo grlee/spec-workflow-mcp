@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
-import { ApiProvider, useApi } from '../api/api';
-import { useWs } from '../ws/WebSocketProvider';
+import { useApi } from '../api/api';
 import { Markdown } from '../markdown/Markdown';
 import { MarkdownEditor } from '../editor/MarkdownEditor';
 import { ConfirmationModal } from '../modals/ConfirmationModal';
@@ -465,10 +464,5 @@ function Content() {
 }
 
 export function SteeringPage() {
-  const { initial } = useWs();
-  return (
-    <ApiProvider initial={initial}>
-      <Content />
-    </ApiProvider>
-  );
+  return <Content />;
 }

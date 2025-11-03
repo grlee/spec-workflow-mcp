@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { ApiProvider, useApi } from '../api/api';
+import { useApi } from '../api/api';
 import { useWs } from '../ws/WebSocketProvider';
 import { useSearchParams } from 'react-router-dom';
 import { useNotifications } from '../notifications/NotificationProvider';
@@ -1432,12 +1432,7 @@ function Content() {
 }
 
 export function TasksPage() {
-  const { initial } = useWs();
-  return (
-    <ApiProvider initial={initial}>
-      <Content />
-    </ApiProvider>
-  );
+  return <Content />;
 }
 
 

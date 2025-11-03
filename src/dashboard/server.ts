@@ -13,6 +13,7 @@ import { findAvailablePort, validateAndCheckPort, checkExistingDashboard, DASHBO
 import { ApprovalStorage } from './approval-storage.js';
 import { parseTasksFromMarkdown } from '../core/task-parser.js';
 import { SpecArchiveService } from '../core/archive-service.js';
+import { ProjectRegistry } from '../core/project-registry.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,11 +34,13 @@ export class DashboardServer {
   private parser: SpecParser;
   private approvalStorage: ApprovalStorage;
   private archiveService: SpecArchiveService;
+  private projectRegistry: ProjectRegistry;
   private options: DashboardOptions;
   private actualPort: number = 0;
   private clients: Set<WebSocket> = new Set();
   private packageVersion: string = 'unknown';
   private isUsingExistingDashboard: boolean = false;
+  private cleanupInterval?: NodeJS.Timeout;
 
   constructor(options: DashboardOptions) {
     this.options = options;
@@ -45,6 +48,7 @@ export class DashboardServer {
     this.watcher = new SpecWatcher(options.projectPath, this.parser);
     this.approvalStorage = new ApprovalStorage(options.projectPath);
     this.archiveService = new SpecArchiveService(options.projectPath);
+    this.projectRegistry = new ProjectRegistry();
 
     this.app = fastify({ logger: false });
   }
@@ -85,6 +89,9 @@ export class DashboardServer {
         // Keep default 'unknown' if both npm and local package.json fail
       }
     }
+
+    // Clean up stale projects from registry
+    await this.projectRegistry.cleanupStaleProjects();
 
     // Register plugins
     await this.app.register(fastifyStatic, {
@@ -145,6 +152,21 @@ export class DashboardServer {
     // API endpoints
     this.app.get('/api/test', async () => {
       return { message: DASHBOARD_TEST_MESSAGE };
+    });
+
+    // New project management endpoints
+    this.app.get('/api/projects/list', async () => {
+      const projects = await this.projectRegistry.getAllProjects();
+      return projects;
+    });
+
+    this.app.get('/api/projects/current', async () => {
+      const resolvedPath = resolve(this.options.projectPath);
+      const projectName = basename(resolvedPath);
+      return {
+        projectPath: resolvedPath,
+        projectName
+      };
     });
 
     this.app.get('/api/specs', async () => {
@@ -323,6 +345,7 @@ export class DashboardServer {
 
       return {
         projectName,
+        projectPath: resolvedPath,
         steering: steeringStatus,
         dashboardUrl: `http://localhost:${this.actualPort}`,
         version: this.packageVersion
@@ -752,12 +775,21 @@ export class DashboardServer {
     // Start server
     await this.app.listen({ port: this.actualPort, host: '0.0.0.0' });
 
+    // Register this project in the global registry
+    const dashboardUrl = `http://localhost:${this.actualPort}`;
+    await this.projectRegistry.registerProject(this.options.projectPath, process.pid);
+
+    // Start periodic cleanup of stale projects (every 30 seconds)
+    this.cleanupInterval = setInterval(async () => {
+      await this.projectRegistry.cleanupStaleProjects();
+    }, 30000);
+
     // Open browser if requested
     if (this.options.autoOpen) {
-      await open(`http://localhost:${this.actualPort}`);
+      await open(dashboardUrl);
     }
 
-    return `http://localhost:${this.actualPort}`;
+    return dashboardUrl;
   }
 
   private async broadcastApprovalUpdate() {
@@ -856,6 +888,19 @@ export class DashboardServer {
     if (this.isUsingExistingDashboard) {
       console.error('Using existing dashboard instance - not stopping it');
       return;
+    }
+
+    // Stop periodic cleanup
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = undefined;
+    }
+
+    // Unregister this project from the global registry
+    try {
+      await this.projectRegistry.unregisterProject(this.options.projectPath);
+    } catch (error) {
+      console.error('Error unregistering project from registry:', error);
     }
 
     // Close all WebSocket connections with proper cleanup

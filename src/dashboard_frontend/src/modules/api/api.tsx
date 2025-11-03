@@ -88,6 +88,7 @@ type ApiContextType = {
   approvals: Approval[];
   info?: ProjectInfo;
   steeringDocuments?: any;
+  projectId: string | null;
   reloadAll: () => Promise<void>;
   getAllSpecDocuments: (name: string) => Promise<Record<string, { content: string; lastModified: string } | null>>;
   getAllArchivedSpecDocuments: (name: string) => Promise<Record<string, { content: string; lastModified: string } | null>>;
@@ -109,7 +110,13 @@ type ApiContextType = {
 
 const ApiContext = createContext<ApiContextType | undefined>(undefined);
 
-export function ApiProvider({ initial, children }: { initial?: { specs?: SpecSummary[]; archivedSpecs?: SpecSummary[]; approvals?: Approval[] }; children: React.ReactNode }) {
+interface ApiProviderProps {
+  initial?: { specs?: SpecSummary[]; archivedSpecs?: SpecSummary[]; approvals?: Approval[] };
+  projectId: string | null;
+  children: React.ReactNode;
+}
+
+export function ApiProvider({ initial, projectId, children }: ApiProviderProps) {
   const { subscribe, unsubscribe } = useWs();
   const [specs, setSpecs] = useState<SpecSummary[]>(initial?.specs || []);
   const [archivedSpecs, setArchivedSpecs] = useState<SpecSummary[]>(initial?.archivedSpecs || []);
@@ -118,23 +125,34 @@ export function ApiProvider({ initial, children }: { initial?: { specs?: SpecSum
   const [steeringDocuments, setSteeringDocuments] = useState<any>(undefined);
 
   const reloadAll = useCallback(async () => {
+    if (!projectId) return;
+
     const [s, as, a, i] = await Promise.all([
-      getJson<SpecSummary[]>('/api/specs'),
-      getJson<SpecSummary[]>('/api/specs/archived'),
-      getJson<Approval[]>('/api/approvals'),
-      getJson<ProjectInfo>('/api/info').catch(() => ({ projectName: 'Project' } as ProjectInfo)),
+      getJson<SpecSummary[]>(`/api/projects/${encodeURIComponent(projectId)}/specs`),
+      getJson<SpecSummary[]>(`/api/projects/${encodeURIComponent(projectId)}/specs/archived`),
+      getJson<Approval[]>(`/api/projects/${encodeURIComponent(projectId)}/approvals`),
+      getJson<ProjectInfo>(`/api/projects/${encodeURIComponent(projectId)}/info`).catch(() => ({ projectName: 'Project' } as ProjectInfo)),
     ]);
     setSpecs(s);
     setArchivedSpecs(as);
     setApprovals(a);
     setInfo(i);
     setSteeringDocuments(i.steering);
-  }, []);
+  }, [projectId]);
 
-  // Load initial data including info on mount
+  // Load initial data when projectId changes
   useEffect(() => {
-    reloadAll();
-  }, [reloadAll]);
+    if (projectId) {
+      reloadAll();
+    } else {
+      // Clear data when no project selected
+      setSpecs([]);
+      setArchivedSpecs([]);
+      setApprovals([]);
+      setInfo(undefined);
+      setSteeringDocuments(undefined);
+    }
+  }, [projectId, reloadAll]);
 
   // Update state when initial websocket data arrives
   useEffect(() => {
@@ -159,48 +177,81 @@ export function ApiProvider({ initial, children }: { initial?: { specs?: SpecSum
     };
 
     // Subscribe to websocket events that contain actual data
-    // Only handle events that provide the updated data directly
     subscribe('spec-update', handleSpecUpdate);
     subscribe('approval-update', handleApprovalUpdate);
     subscribe('steering-update', handleSteeringUpdate);
-    
-    // Do NOT handle 'update' and 'task-update' events as they are just file change notifications
-    // without updated data - let individual components handle their own updates via specific events
 
     return () => {
       unsubscribe('spec-update', handleSpecUpdate);
       unsubscribe('approval-update', handleApprovalUpdate);
       unsubscribe('steering-update', handleSteeringUpdate);
     };
-  }, [subscribe, unsubscribe, reloadAll]);
+  }, [subscribe, unsubscribe]);
 
-  const value = useMemo<ApiContextType>(() => ({
-    specs,
-    archivedSpecs,
-    approvals,
-    info,
-    steeringDocuments,
-    reloadAll,
-    getAllSpecDocuments: (name: string) => getJson(`/api/specs/${encodeURIComponent(name)}/all`),
-    getAllArchivedSpecDocuments: (name: string) => getJson(`/api/specs/${encodeURIComponent(name)}/all/archived`),
-    getSpecTasksProgress: (name: string) => getJson(`/api/specs/${encodeURIComponent(name)}/tasks/progress`),
-    updateTaskStatus: (specName: string, taskId: string, status: 'pending' | 'in-progress' | 'completed') => putJson(`/api/specs/${encodeURIComponent(specName)}/tasks/${encodeURIComponent(taskId)}/status`, { status }),
-    approvalsAction: (id, action, body) => postJson(`/api/approvals/${encodeURIComponent(id)}/${action}`, body),
-    getApprovalContent: (id: string) => getJson(`/api/approvals/${encodeURIComponent(id)}/content`),
-    getApprovalSnapshots: (id: string) => getJson(`/api/approvals/${encodeURIComponent(id)}/snapshots`),
-    getApprovalSnapshot: (id: string, version: number) => getJson(`/api/approvals/${encodeURIComponent(id)}/snapshots/${version}`),
-    getApprovalDiff: (id: string, fromVersion: number, toVersion?: number | 'current') => {
-      const to = toVersion === undefined ? 'current' : toVersion;
-      return getJson(`/api/approvals/${encodeURIComponent(id)}/diff?from=${fromVersion}&to=${to}`);
-    },
-    captureApprovalSnapshot: (id: string) => postJson(`/api/approvals/${encodeURIComponent(id)}/snapshot`, {}),
-    saveSpecDocument: (name: string, document: string, content: string) => putJson(`/api/specs/${encodeURIComponent(name)}/${encodeURIComponent(document)}`, { content }),
-    saveArchivedSpecDocument: (name: string, document: string, content: string) => putJson(`/api/specs/${encodeURIComponent(name)}/${encodeURIComponent(document)}/archived`, { content }),
-    archiveSpec: (name: string) => postJson(`/api/specs/${encodeURIComponent(name)}/archive`, {}),
-    unarchiveSpec: (name: string) => postJson(`/api/specs/${encodeURIComponent(name)}/unarchive`, {}),
-    getSteeringDocument: (name: string) => getJson(`/api/steering/${encodeURIComponent(name)}`),
-    saveSteeringDocument: (name: string, content: string) => putJson(`/api/steering/${encodeURIComponent(name)}`, { content }),
-  }), [specs, archivedSpecs, approvals, info, steeringDocuments, reloadAll]);
+  const value = useMemo<ApiContextType>(() => {
+    if (!projectId) {
+      // Return empty API when no project selected
+      return {
+        specs: [],
+        archivedSpecs: [],
+        approvals: [],
+        info: undefined,
+        steeringDocuments: undefined,
+        projectId: null,
+        reloadAll: async () => {},
+        getAllSpecDocuments: async () => ({}),
+        getAllArchivedSpecDocuments: async () => ({}),
+        getSpecTasksProgress: async () => ({}),
+        updateTaskStatus: async () => ({ ok: false, status: 400 }),
+        approvalsAction: async () => ({ ok: false, status: 400 }),
+        getApprovalContent: async () => ({ content: '' }),
+        getApprovalSnapshots: async () => [],
+        getApprovalSnapshot: async () => ({} as any),
+        getApprovalDiff: async () => ({} as any),
+        captureApprovalSnapshot: async () => ({ success: false, message: 'No project selected' }),
+        saveSpecDocument: async () => ({ ok: false, status: 400 }),
+        saveArchivedSpecDocument: async () => ({ ok: false, status: 400 }),
+        archiveSpec: async () => ({ ok: false, status: 400 }),
+        unarchiveSpec: async () => ({ ok: false, status: 400 }),
+        getSteeringDocument: async () => ({ content: '', lastModified: '' }),
+        saveSteeringDocument: async () => ({ ok: false, status: 400 }),
+      };
+    }
+
+    const prefix = `/api/projects/${encodeURIComponent(projectId)}`;
+
+    return {
+      specs,
+      archivedSpecs,
+      approvals,
+      info,
+      steeringDocuments,
+      projectId,
+      reloadAll,
+      getAllSpecDocuments: (name: string) => getJson(`${prefix}/specs/${encodeURIComponent(name)}/all`),
+      getAllArchivedSpecDocuments: (name: string) => getJson(`${prefix}/specs/${encodeURIComponent(name)}/all/archived`),
+      getSpecTasksProgress: (name: string) => getJson(`${prefix}/specs/${encodeURIComponent(name)}/tasks/progress`),
+      updateTaskStatus: (specName: string, taskId: string, status: 'pending' | 'in-progress' | 'completed') =>
+        putJson(`${prefix}/specs/${encodeURIComponent(specName)}/tasks/${encodeURIComponent(taskId)}/status`, { status }),
+      approvalsAction: (id, action, body) => postJson(`${prefix}/approvals/${encodeURIComponent(id)}/${action}`, body),
+      getApprovalContent: (id: string) => getJson(`${prefix}/approvals/${encodeURIComponent(id)}/content`),
+      getApprovalSnapshots: (id: string) => getJson(`${prefix}/approvals/${encodeURIComponent(id)}/snapshots`),
+      getApprovalSnapshot: (id: string, version: number) => getJson(`${prefix}/approvals/${encodeURIComponent(id)}/snapshots/${version}`),
+      getApprovalDiff: (id: string, fromVersion: number, toVersion?: number | 'current') => {
+        const to = toVersion === undefined ? 'current' : toVersion;
+        return getJson(`${prefix}/approvals/${encodeURIComponent(id)}/diff?from=${fromVersion}&to=${to}`);
+      },
+      captureApprovalSnapshot: (id: string) => postJson(`${prefix}/approvals/${encodeURIComponent(id)}/snapshot`, {}),
+      saveSpecDocument: (name: string, document: string, content: string) =>
+        putJson(`${prefix}/specs/${encodeURIComponent(name)}/${encodeURIComponent(document)}`, { content }),
+      saveArchivedSpecDocument: (name: string, document: string, content: string) =>
+        putJson(`${prefix}/specs/${encodeURIComponent(name)}/${encodeURIComponent(document)}/archived`, { content }),
+      archiveSpec: (name: string) => postJson(`${prefix}/specs/${encodeURIComponent(name)}/archive`, {}),
+      unarchiveSpec: (name: string) => postJson(`${prefix}/specs/${encodeURIComponent(name)}/unarchive`, {}),
+      getSteeringDocument: (name: string) => getJson(`${prefix}/steering/${encodeURIComponent(name)}`),
+      saveSteeringDocument: (name: string, content: string) => putJson(`${prefix}/steering/${encodeURIComponent(name)}`, { content }),
+    };
+  }, [specs, archivedSpecs, approvals, info, steeringDocuments, projectId, reloadAll]);
 
   return <ApiContext.Provider value={value}>{children}</ApiContext.Provider>;
 }
