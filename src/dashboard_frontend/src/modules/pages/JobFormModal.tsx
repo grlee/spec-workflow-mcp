@@ -156,12 +156,15 @@ export function JobFormModal({ isOpen, onClose, onSubmit, initialJob, isLoading 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-          {isEditMode ? 'Edit Automation Job' : 'Create New Automation Job'}
-        </h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] flex flex-col">
+        <div className="px-6 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            {isEditMode ? 'Edit Automation Job' : 'Create New Automation Job'}
+          </h2>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="flex-1 overflow-y-auto px-6 py-6">
+          <form id="job-form" onSubmit={handleSubmit} className="space-y-6">
           {/* Job Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -358,9 +361,12 @@ export function JobFormModal({ isOpen, onClose, onSubmit, initialJob, isLoading 
               <p className="text-sm text-red-700 dark:text-red-400">{errors.submit}</p>
             </div>
           )}
+          </form>
+        </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
+        {/* Sticky Footer with Action Buttons */}
+        <div className="px-6 pb-6 pt-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <div className="flex gap-2">
             <button
               type="button"
               onClick={onClose}
@@ -371,6 +377,7 @@ export function JobFormModal({ isOpen, onClose, onSubmit, initialJob, isLoading 
             </button>
             <button
               type="submit"
+              form="job-form"
               disabled={isLoading}
               className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
             >
@@ -378,7 +385,7 @@ export function JobFormModal({ isOpen, onClose, onSubmit, initialJob, isLoading 
               {isEditMode ? 'Update Job' : 'Create Job'}
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
