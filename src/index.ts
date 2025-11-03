@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 import { SpecWorkflowMCPServer } from './server.js';
-import { DashboardServer } from './dashboard/server.js';
-import { DASHBOARD_TEST_MESSAGE } from './dashboard/utils.js';
+import { MultiProjectDashboardServer } from './dashboard/multi-server.js';
 import { homedir } from 'os';
 import { loadConfigFile, mergeConfigs, SpecWorkflowConfig } from './config.js';
 import { WorkspaceInitializer } from './core/workspace-initializer.js';
@@ -41,14 +40,14 @@ MODES OF OPERATION:
 1. MCP Server Only (default):
    spec-workflow-mcp
    spec-workflow-mcp ~/my-project
-   
+
    Starts MCP server without dashboard. Dashboard can be started separately.
 
 2. MCP Server with Auto-Started Dashboard:
    spec-workflow-mcp --AutoStartDashboard
    spec-workflow-mcp --AutoStartDashboard --port 3456
    spec-workflow-mcp ~/my-project --AutoStartDashboard
-   
+
    Starts MCP server and automatically launches dashboard in browser.
    Note: Server and dashboard shut down when MCP client disconnects.
 
@@ -56,7 +55,7 @@ MODES OF OPERATION:
    spec-workflow-mcp --dashboard
    spec-workflow-mcp --dashboard --port 3456
    spec-workflow-mcp ~/my-project --dashboard
-   
+
    Runs only the web dashboard without MCP server.
 
 EXAMPLES:
@@ -98,9 +97,9 @@ function expandTildePath(path: string): string {
   return path;
 }
 
-function parseArguments(args: string[]): { 
-  projectPath: string; 
-  isDashboardMode: boolean; 
+function parseArguments(args: string[]): {
+  projectPath: string;
+  isDashboardMode: boolean;
   autoStartDashboard: boolean;
   port?: number;
   lang?: string;
@@ -110,7 +109,7 @@ function parseArguments(args: string[]): {
   const autoStartDashboard = args.includes('--AutoStartDashboard');
   let customPort: number | undefined;
   let configPath: string | undefined;
-  
+
   // Check for invalid flags
   const validFlags = ['--dashboard', '--AutoStartDashboard', '--port', '--config', '--help', '-h'];
   for (const arg of args) {
@@ -125,11 +124,11 @@ function parseArguments(args: string[]): {
       }
     }
   }
-  
+
   // Parse --port parameter (supports --port 3000 and --port=3000 formats)
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    
+
     if (arg.startsWith('--port=')) {
       // Handle --port=3000 format
       const portStr = arg.split('=')[1];
@@ -161,11 +160,11 @@ function parseArguments(args: string[]): {
       throw new Error('--port parameter requires a value (e.g., --port 3000)');
     }
   }
-  
+
   // Parse --config parameter (supports --config path and --config=path formats)
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    
+
     if (arg.startsWith('--config=')) {
       // Handle --config=path format
       configPath = arg.split('=')[1];
@@ -180,7 +179,7 @@ function parseArguments(args: string[]): {
       throw new Error('--config parameter requires a value (e.g., --config ./config.toml)');
     }
   }
-  
+
   // Get project path (filter out flags and their values)
   const filteredArgs = args.filter((arg, index) => {
     if (arg === '--dashboard') return false;
@@ -193,36 +192,36 @@ function parseArguments(args: string[]): {
     if (index > 0 && (args[index - 1] === '--port' || args[index - 1] === '--config')) return false;
     return true;
   });
-  
+
   const rawProjectPath = filteredArgs[0] || process.cwd();
   const projectPath = expandTildePath(rawProjectPath);
-  
+
   // Warn if no explicit path was provided and we're using cwd
   if (!filteredArgs[0] && !isDashboardMode) {
     console.warn(`Warning: No project path specified, using current directory: ${projectPath}`);
     console.warn('Consider specifying an explicit path for better clarity.');
   }
-  
+
   return { projectPath, isDashboardMode, autoStartDashboard, port: customPort, lang: undefined, configPath };
 }
 
 async function main() {
   try {
     const args = process.argv.slice(2);
-    
+
     // Check for help flag
     if (args.includes('--help') || args.includes('-h')) {
       showHelp();
       process.exit(0);
     }
-    
+
     // Parse command-line arguments first to get initial project path
     const cliArgs = parseArguments(args);
     let projectPath = cliArgs.projectPath;
-    
+
     // Load config file (custom path or default location)
     const configResult = loadConfigFile(projectPath, cliArgs.configPath);
-    
+
     if (configResult.error) {
       // If custom config was specified but failed, this is fatal
       if (cliArgs.configPath) {
@@ -235,7 +234,7 @@ async function main() {
     } else if (configResult.config && configResult.configPath) {
       console.error(`Loaded config from: ${configResult.configPath}`);
     }
-    
+
     // Convert CLI args to config format
     const cliConfig: SpecWorkflowConfig = {
       projectDir: cliArgs.projectPath !== process.cwd() ? cliArgs.projectPath : undefined,
@@ -244,10 +243,10 @@ async function main() {
       port: cliArgs.port,
       lang: cliArgs.lang
     };
-    
+
     // Merge configs (CLI overrides file config)
     const finalConfig = mergeConfigs(configResult.config, cliConfig);
-    
+
     // Apply final configuration
     if (finalConfig.projectDir) {
       projectPath = finalConfig.projectDir;
@@ -256,111 +255,72 @@ async function main() {
     const autoStartDashboard = finalConfig.autoStartDashboard || false;
     const port = finalConfig.port;
     const lang = finalConfig.lang;
-    
+
     if (isDashboardMode) {
-      // Dashboard only mode
-      console.error(`Starting Spec Workflow Dashboard for project: ${projectPath}`);
+      // Dashboard only mode - use new multi-project dashboard
+      console.error(`Starting Unified Multi-Project Dashboard`);
       if (port) {
         console.error(`Using custom port: ${port}`);
       }
-      
-      // Initialize workspace directories and templates
-      const __dirname = dirname(fileURLToPath(import.meta.url));
-      const packageJsonPath = join(__dirname, '..', 'package.json');
-      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-      const workspaceInitializer = new WorkspaceInitializer(projectPath, packageJson.version);
-      await workspaceInitializer.initializeWorkspace();
-      
-      const dashboardServer = new DashboardServer({
-        projectPath,
+
+      const dashboardServer = new MultiProjectDashboardServer({
         autoOpen: true,
         port
       });
-      
+
       try {
         const dashboardUrl = await dashboardServer.start();
         console.error(`Dashboard started at: ${dashboardUrl}`);
+        console.error('Projects will automatically appear as MCP servers register.');
         console.error('Press Ctrl+C to stop the dashboard');
       } catch (error: any) {
-        if (error.message.includes('already in use') && port) {
-          // Check if it's an existing dashboard
-          try {
-            const response = await fetch(`http://localhost:${port}/api/test`, {
-              method: 'GET',
-              signal: AbortSignal.timeout(1000)
-            });
-            
-            if (response.ok) {
-              const data = await response.json() as { message?: string };
-              if (data.message === DASHBOARD_TEST_MESSAGE) {
-                console.error(`Dashboard already running at http://localhost:${port}`);
-                console.error('Another dashboard instance is already serving this project.');
-                console.error('Please close the existing instance or use a different port.');
-                process.exit(0);
-              }
-            }
-          } catch {
-            // Not our dashboard
-          }
-          console.error(`Error: Port ${port} is already in use by another service.`);
-          console.error('Please choose a different port or stop the service using this port.');
-        } else {
-          console.error(`Failed to start dashboard: ${error.message}`);
-        }
+        console.error(`Failed to start dashboard: ${error.message}`);
         process.exit(1);
       }
-      
+
       // Handle graceful shutdown
       const shutdown = async () => {
         console.error('\nShutting down dashboard...');
         await dashboardServer.stop();
         process.exit(0);
       };
-      
+
       process.on('SIGINT', shutdown);
       process.on('SIGTERM', shutdown);
-      
+
       // Keep the process running
       process.stdin.resume();
-      
+
     } else {
-      // MCP server mode (with optional auto-start dashboard)
+      // MCP server mode (with optional auto-start dashboard - deprecated)
       console.error(`Starting Spec Workflow MCP Server for project: ${projectPath}`);
       console.error(`Working directory: ${process.cwd()}`);
-      
+
       const server = new SpecWorkflowMCPServer();
-      
-      // Initialize with dashboard options
+
+      // Initialize with dashboard options (will show deprecation warning if used)
       const dashboardOptions = autoStartDashboard ? {
         autoStart: true,
         port: port
       } : undefined;
-      
+
       await server.initialize(projectPath, dashboardOptions, lang);
-      
-      // Start monitoring for dashboard session
-      server.startDashboardMonitoring();
-      
-      // Inform user about MCP server lifecycle
-      if (autoStartDashboard) {
-        console.error('\nMCP server is running. The server and dashboard will shut down when the MCP client disconnects.');
-      }
-      
+
       // Handle graceful shutdown
       process.on('SIGINT', async () => {
         await server.stop();
         process.exit(0);
       });
-      
+
       process.on('SIGTERM', async () => {
         await server.stop();
         process.exit(0);
       });
     }
-    
+
   } catch (error: any) {
     console.error('Error:', error.message);
-    
+
     // Provide additional context for common path-related issues
     if (error.message.includes('ENOENT') || error.message.includes('path') || error.message.includes('directory')) {
       console.error('\nProject path troubleshooting:');
@@ -369,7 +329,7 @@ async function main() {
       console.error('- Check that the path doesn\'t contain special characters that need escaping');
       console.error(`- Current working directory: ${process.cwd()}`);
     }
-    
+
     process.exit(1);
   }
 }
