@@ -7,7 +7,8 @@
     "steering": "指导",
     "specs": "规范",
     "tasks": "任务",
-    "approvals": "审批"
+    "approvals": "审批",
+    "settings": "设置"
   },
   "connectionStatus": {
     "connected": "已连接",
@@ -391,5 +392,31 @@
     "mute": "静音通知",
     "enable": "启用通知声音",
     "volumeLevel": "音量: {{percentage}}%"
+  },
+  "settings": {
+    "title": "设置",
+    "description": "管理在所有连接项目上运行的自动清理作业",
+    "section": {
+      "automatedCleanup": "自动清理",
+      "automatedCleanupDesc": "根据计划自动删除旧的批准记录、规范和存档的规范。配置清理作业在所有连接的项目中循环运行。"
+    },
+    "addJob": "添加作业",
+    "loading": "正在加载作业...",
+    "noJobs": "没有自动化作业",
+    "noJobsDesc": "创建您的第一个自动化作业以开始",
+    "createFirst": "创建第一个作业",
+    "addNewJob": "添加新作业",
+    "editJob": "编辑作业",
+    "deleteJob": "删除作业",
+    "deleteConfirm": "您确定要删除此自动化作业吗? 此操作无法撤消。",
+    "lastRun": "最后运行",
+    "schedule": "计划",
+    "runNow": "立即运行",
+    "running": "正在运行...",
+    "edit": "编辑",
+    "delete": "删除",
+    "cancel": "取消",
+    "close": "关闭",
+    "jobDescription": "删除超过{{days}}天的记录，按计划{{schedule}}"
   }
 }

@@ -7,7 +7,8 @@
     "steering": "Pilotage",
     "specs": "Spécifications",
     "tasks": "Tâches",
-    "approvals": "Approbations"
+    "approvals": "Approbations",
+    "settings": "Paramètres"
   },
   "connectionStatus": {
     "connected": "Connecté",
@@ -391,5 +392,31 @@
     "mute": "Désactiver les notifications",
     "enable": "Activer les sons de notification",
     "volumeLevel": "Volume: {{percentage}}%"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "section": {
+      "automatedCleanup": "Nettoyage Automatisé",
+      "automatedCleanupDesc": "Supprimez automatiquement les anciens enregistrements d'approbation, les spécifications et les spécifications archivées selon un horaire. Configurez les tâches de nettoyage pour s'exécuter régulièrement sur tous les projets connectés."
+    },
+    "description": "Gérer les tâches de nettoyage automatisées sur tous les projets connectés",
+    "addJob": "Ajouter une tâche",
+    "loading": "Chargement des tâches...",
+    "noJobs": "Aucune tâche d'automatisation",
+    "noJobsDesc": "Créez votre première tâche d'automatisation pour commencer",
+    "createFirst": "Créer la première tâche",
+    "addNewJob": "Ajouter une nouvelle tâche",
+    "editJob": "Modifier la tâche",
+    "deleteJob": "Supprimer la tâche",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette tâche d'automatisation? Cette action ne peut pas être annulée.",
+    "lastRun": "Dernière exécution",
+    "schedule": "Calendrier",
+    "runNow": "Exécuter maintenant",
+    "running": "Exécution...",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "jobDescription": "Supprimer les enregistrements de plus de {{days}} jours selon le calendrier: {{schedule}}"
   }
 }

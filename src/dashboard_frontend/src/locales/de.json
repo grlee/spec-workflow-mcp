@@ -7,7 +7,8 @@
     "steering": "Steuerung",
     "specs": "Spezifikationen",
     "tasks": "Aufgaben",
-    "approvals": "Genehmigungen"
+    "approvals": "Genehmigungen",
+    "settings": "Einstellungen"
   },
   "connectionStatus": {
     "connected": "Verbunden",
@@ -391,5 +392,31 @@
     "mute": "Benachrichtigungen stumm schalten",
     "enable": "Benachrichtigungstöne aktivieren",
     "volumeLevel": "Lautstärke: {{percentage}}%"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "description": "Verwalten Sie automatisierte Bereinigungsaufträge für alle verbundenen Projekte",
+    "section": {
+      "automatedCleanup": "Automatische Bereinigung",
+      "automatedCleanupDesc": "Automatisches Löschen alter Genehmigungsdatensätze, Spezifikationen und archivierter Spezifikationen basierend auf einem Zeitplan. Konfigurieren Sie Bereinigungsvorgänge so, dass sie regelmäßig über alle verbundenen Projekte hinweg ausgeführt werden."
+    },
+    "addJob": "Auftrag hinzufügen",
+    "loading": "Aufträge werden geladen...",
+    "noJobs": "Keine Automatisierungsaufträge",
+    "noJobsDesc": "Erstellen Sie Ihren ersten Automatisierungsauftrag",
+    "createFirst": "Ersten Auftrag erstellen",
+    "addNewJob": "Neuen Auftrag hinzufügen",
+    "editJob": "Auftrag bearbeiten",
+    "deleteJob": "Auftrag löschen",
+    "deleteConfirm": "Möchten Sie diesen Automatisierungsauftrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "lastRun": "Letzte Ausführung",
+    "schedule": "Zeitplan",
+    "runNow": "Jetzt ausführen",
+    "running": "Läuft...",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "jobDescription": "Löschen Sie Datensätze, die älter als {{days}} Tage sind, nach Zeitplan: {{schedule}}"
   }
 }

@@ -7,7 +7,8 @@
     "steering": "Steering",
     "specs": "Specs",
     "tasks": "Tasks",
-    "approvals": "Approvals"
+    "approvals": "Approvals",
+    "settings": "Settings"
   },
   "connectionStatus": {
     "connected": "Connected",
@@ -391,5 +392,31 @@
     "mute": "Mute notifications",
     "enable": "Enable notification sounds",
     "volumeLevel": "Volume: {{percentage}}%"
+  },
+  "settings": {
+    "title": "Settings",
+    "description": "Manage automated cleanup jobs that run across all connected projects",
+    "addJob": "Add Job",
+    "loading": "Loading jobs...",
+    "noJobs": "No automation jobs",
+    "noJobsDesc": "Create your first automation job to get started",
+    "createFirst": "Create First Job",
+    "addNewJob": "Add New Job",
+    "editJob": "Edit Job",
+    "deleteJob": "Delete Job",
+    "deleteConfirm": "Are you sure you want to delete this automation job? This action cannot be undone.",
+    "lastRun": "Last Run",
+    "schedule": "Schedule",
+    "runNow": "Run Now",
+    "running": "Running...",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "close": "Close",
+    "jobDescription": "Delete records older than {{days}} days on schedule: {{schedule}}",
+    "section": {
+      "automatedCleanup": "Automated Cleanup",
+      "automatedCleanupDesc": "Automatically delete old approval records, specifications, and archived specifications based on a schedule. Configure cleanup jobs to run on a recurring basis across all connected projects."
+    }
   }
 }

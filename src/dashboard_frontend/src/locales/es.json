@@ -7,7 +7,8 @@
     "steering": "Dirección",
     "specs": "Especificaciones",
     "tasks": "Tareas",
-    "approvals": "Aprobaciones"
+    "approvals": "Aprobaciones",
+    "settings": "Configuración"
   },
   "connectionStatus": {
     "connected": "Conectado",
@@ -391,5 +392,31 @@
     "mute": "Silenciar notificaciones",
     "enable": "Habilitar sonidos de notificación",
     "volumeLevel": "Volumen: {{percentage}}%"
+  },
+  "settings": {
+    "title": "Configuración",
+    "section": {
+      "automatedCleanup": "Limpieza Automatizada",
+      "automatedCleanupDesc": "Elimine automáticamente registros de aprobación antiguos, especificaciones y especificaciones archivadas según un horario. Configure trabajos de limpieza para ejecutarse de forma recurrente en todos los proyectos conectados."
+    },
+    "description": "Gestionar trabajos de limpieza automatizados en todos los proyectos conectados",
+    "addJob": "Añadir Trabajo",
+    "loading": "Cargando trabajos...",
+    "noJobs": "Sin trabajos de automatización",
+    "noJobsDesc": "Cree su primer trabajo de automatización para comenzar",
+    "createFirst": "Crear Primer Trabajo",
+    "addNewJob": "Añadir Nuevo Trabajo",
+    "editJob": "Editar Trabajo",
+    "deleteJob": "Eliminar Trabajo",
+    "deleteConfirm": "¿Está seguro de que desea eliminar este trabajo de automatización? Esta acción no se puede deshacer.",
+    "lastRun": "Última Ejecución",
+    "schedule": "Horario",
+    "runNow": "Ejecutar Ahora",
+    "running": "Ejecutando...",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "jobDescription": "Eliminar registros más antiguos que {{days}} días según el horario: {{schedule}}"
   }
 }

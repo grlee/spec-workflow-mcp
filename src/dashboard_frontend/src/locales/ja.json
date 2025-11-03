@@ -7,7 +7,8 @@
     "steering": "ステアリング",
     "specs": "仕様書",
     "tasks": "タスク",
-    "approvals": "承認"
+    "approvals": "承認",
+    "settings": "設定"
   },
   "connectionStatus": {
     "connected": "接続済み",
@@ -391,5 +392,31 @@
     "mute": "通知をミュート",
     "enable": "通知音を有効にする",
     "volumeLevel": "音量: {{percentage}}%"
+  },
+  "settings": {
+    "title": "設定",
+    "section": {
+      "automatedCleanup": "自動クリーンアップ",
+      "automatedCleanupDesc": "スケジュールに基づいて、古い承認レコード、仕様、およびアーカイブされた仕様を自動的に削除します。接続されているすべてのプロジェクト全体で定期的に実行されるようにクリーンアップジョブを構成します。"
+    },
+    "description": "接続されているすべてのプロジェクト全体で自動クリーンアップジョブを管理",
+    "addJob": "ジョブを追加",
+    "loading": "ジョブを読み込み中...",
+    "noJobs": "オートメーションジョブなし",
+    "noJobsDesc": "最初のオートメーションジョブを作成して始めましょう",
+    "createFirst": "最初のジョブを作成",
+    "addNewJob": "新しいジョブを追加",
+    "editJob": "ジョブを編集",
+    "deleteJob": "ジョブを削除",
+    "deleteConfirm": "このオートメーションジョブを削除してもよろしいですか？この操作は取り消せません。",
+    "lastRun": "最後の実行",
+    "schedule": "スケジュール",
+    "runNow": "今すぐ実行",
+    "running": "実行中...",
+    "edit": "編集",
+    "delete": "削除",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "jobDescription": "{{schedule}}のスケジュールに従い、{{days}}日以上古いレコードを削除"
   }
 }
