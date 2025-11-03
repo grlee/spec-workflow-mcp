@@ -102,14 +102,30 @@ function SteeringModal({ document, isOpen, onClose }: { document: SteeringDocume
   // Check for unsaved changes before closing
   const handleClose = useCallback(() => {
     const hasUnsaved = editContent !== content && viewMode === 'editor';
-    
+
     if (hasUnsaved) {
       setConfirmCloseModalOpen(true);
       return;
     }
-    
+
     onClose();
   }, [editContent, content, viewMode, onClose]);
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleClose();
+      }
+    };
+
+    if (isOpen) {
+      window.document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => window.document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, handleClose]);
 
   const handleConfirmClose = () => {
     onClose();

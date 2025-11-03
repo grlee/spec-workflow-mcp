@@ -132,14 +132,30 @@ function SpecModal({ spec, isOpen, onClose, isArchived }: { spec: any; isOpen: b
   // Check for unsaved changes before closing
   const handleClose = useCallback(() => {
     const hasUnsaved = editContent !== content && viewMode === 'editor';
-    
+
     if (hasUnsaved) {
       setConfirmCloseModalOpen(true);
       return;
     }
-    
+
     onClose();
   }, [editContent, content, viewMode, onClose]);
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        handleClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, handleClose]);
 
   const handleConfirmClose = () => {
     onClose();
