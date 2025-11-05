@@ -10,7 +10,9 @@ import {
   CubeIcon,
   CodeBracketSquareIcon,
   CircleStackIcon,
-  LinkIcon
+  LinkIcon,
+  ChevronRightIcon,
+  ChevronDownIcon
 } from '@heroicons/react/24/solid';
 
 function formatDate(dateStr: string) {
@@ -93,14 +95,11 @@ function ArtifactSection({
             {title} ({items.length})
           </h5>
         </div>
-        <svg
-          className={`w-4 h-4 transition-transform ${textColor} ${isExpanded ? 'rotate-180' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-        </svg>
+        {isExpanded ? (
+          <ChevronDownIcon className={`w-4 h-4 ${textColor}`} />
+        ) : (
+          <ChevronRightIcon className={`w-4 h-4 ${textColor}`} />
+        )}
       </button>
 
       {isExpanded && (
@@ -323,9 +322,12 @@ function LogEntryCard({ entry }: LogEntryProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mb-3">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg mb-3">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex items-start justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+      >
+        <div className="flex-1 text-left">
           <div className="flex items-center gap-2">
             <span className="inline-block px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded text-xs font-medium">
               {t('logsPage.taskBadge', 'Task')} {entry.taskId}
@@ -336,23 +338,17 @@ function LogEntryCard({ entry }: LogEntryProps) {
           </div>
           <p className="mt-2 text-gray-900 dark:text-white font-medium">{entry.summary}</p>
         </div>
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="ml-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
-        >
-          <svg
-            className={`w-5 h-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </button>
-      </div>
+        <div className="ml-4 text-gray-500 dark:text-gray-400 flex-shrink-0">
+          {isExpanded ? (
+            <ChevronDownIcon className="w-5 h-5" />
+          ) : (
+            <ChevronRightIcon className="w-5 h-5" />
+          )}
+        </div>
+      </button>
 
       {isExpanded && (
-        <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
+        <div className="border-t border-gray-200 dark:border-gray-700 p-4 space-y-4">
           {/* Code Statistics */}
           <div>
             <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('logsPage.stats.title')}</h4>
