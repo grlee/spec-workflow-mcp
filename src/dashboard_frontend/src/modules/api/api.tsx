@@ -110,6 +110,7 @@ type ApiContextType = {
   addImplementationLog: (specName: string, logData: any) => Promise<{ ok: boolean; status: number; data?: any }>;
   getImplementationLogs: (specName: string, query?: { taskId?: string; search?: string }) => Promise<{ entries: ImplementationLogEntry[] }>;
   getImplementationLogStats: (specName: string, taskId: string) => Promise<any>;
+  getChangelog: (version: string) => Promise<{ content: string }>;
 };
 
 const ApiContext = createContext<ApiContextType | undefined>(undefined);
@@ -222,6 +223,7 @@ export function ApiProvider({ initial, projectId, children }: ApiProviderProps) 
         addImplementationLog: async () => ({ ok: false, status: 400 }),
         getImplementationLogs: async () => ({ entries: [] }),
         getImplementationLogStats: async () => ({}),
+        getChangelog: async () => ({ content: '' }),
       };
     }
 
@@ -267,6 +269,7 @@ export function ApiProvider({ initial, projectId, children }: ApiProviderProps) 
         return getJson(url);
       },
       getImplementationLogStats: (specName: string, taskId: string) => getJson(`${prefix}/specs/${encodeURIComponent(specName)}/implementation-log/task/${encodeURIComponent(taskId)}/stats`),
+      getChangelog: (version: string) => getJson(`${prefix}/changelog/${encodeURIComponent(version)}`),
     };
   }, [specs, archivedSpecs, approvals, info, steeringDocuments, projectId, reloadAll]);
 

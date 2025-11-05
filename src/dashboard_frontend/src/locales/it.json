@@ -486,5 +486,14 @@
     "cancel": "Annulla",
     "close": "Chiudi",
     "jobDescription": "Elimina i record più vecchi di {{days}} giorni secondo la pianificazione: {{schedule}}"
+  },
+  "changelog": {
+    "viewChangelog": "Visualizza il registro delle modifiche",
+    "modal": {
+      "title": "Registro delle modifiche",
+      "version": "Versione",
+      "loading": "Caricamento del registro delle modifiche...",
+      "notFound": "Registro delle modifiche non trovato per questa versione"
+    }
   }
 }

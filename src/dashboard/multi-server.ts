@@ -750,6 +750,56 @@ export class MultiProjectDashboardServer {
       }
     });
 
+    // Project-specific changelog endpoint
+    this.app.get('/api/projects/:projectId/changelog/:version', async (request, reply) => {
+      const { version } = request.params as { version: string };
+
+      try {
+        const changelogPath = join(__dirname, '..', '..', 'CHANGELOG.md');
+        const content = await readFile(changelogPath, 'utf-8');
+
+        // Extract the section for the requested version
+        const versionRegex = new RegExp(`## \\[${version}\\][^]*?(?=## \\[|$)`, 'i');
+        const match = content.match(versionRegex);
+
+        if (!match) {
+          return reply.code(404).send({ error: `Changelog for version ${version} not found` });
+        }
+
+        return { content: match[0].trim() };
+      } catch (error: any) {
+        if (error.code === 'ENOENT') {
+          return reply.code(404).send({ error: 'Changelog file not found' });
+        }
+        return reply.code(500).send({ error: `Failed to fetch changelog: ${error.message}` });
+      }
+    });
+
+    // Global changelog endpoint
+    this.app.get('/api/changelog/:version', async (request, reply) => {
+      const { version } = request.params as { version: string };
+
+      try {
+        const changelogPath = join(__dirname, '..', '..', 'CHANGELOG.md');
+        const content = await readFile(changelogPath, 'utf-8');
+
+        // Extract the section for the requested version
+        const versionRegex = new RegExp(`## \\[${version}\\][^]*?(?=## \\[|$)`, 'i');
+        const match = content.match(versionRegex);
+
+        if (!match) {
+          return reply.code(404).send({ error: `Changelog for version ${version} not found` });
+        }
+
+        return { content: match[0].trim() };
+      } catch (error: any) {
+        if (error.code === 'ENOENT') {
+          return reply.code(404).send({ error: 'Changelog file not found' });
+        }
+        return reply.code(500).send({ error: `Failed to fetch changelog: ${error.message}` });
+      }
+    });
+
     // Global settings endpoints
 
     // Get all automation jobs

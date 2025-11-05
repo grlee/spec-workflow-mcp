@@ -486,5 +486,14 @@
     "cancel": "Cancelar",
     "close": "Fechar",
     "jobDescription": "Excluir registros com mais de {{days}} dias no cronograma: {{schedule}}"
+  },
+  "changelog": {
+    "viewChangelog": "Ver histórico de alterações",
+    "modal": {
+      "title": "Histórico de alterações",
+      "version": "Versão",
+      "loading": "Carregando histórico de alterações...",
+      "notFound": "Histórico de alterações não encontrado para esta versão"
+    }
   }
 }

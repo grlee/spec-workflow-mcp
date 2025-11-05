@@ -486,5 +486,14 @@
     "cancel": "Cancelar",
     "close": "Cerrar",
     "jobDescription": "Eliminar registros más antiguos que {{days}} días según el horario: {{schedule}}"
+  },
+  "changelog": {
+    "viewChangelog": "Ver historial de cambios",
+    "modal": {
+      "title": "Historial de cambios",
+      "version": "Versión",
+      "loading": "Cargando historial de cambios...",
+      "notFound": "Historial de cambios no encontrado para esta versión"
+    }
   }
 }

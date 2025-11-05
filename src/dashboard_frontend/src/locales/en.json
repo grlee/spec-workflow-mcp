@@ -486,5 +486,14 @@
       "automatedCleanup": "Automated Cleanup",
       "automatedCleanupDesc": "Automatically delete old approval records, specifications, and archived specifications based on a schedule. Configure cleanup jobs to run on a recurring basis across all connected projects."
     }
+  },
+  "changelog": {
+    "viewChangelog": "View changelog",
+    "modal": {
+      "title": "Changelog",
+      "version": "Version",
+      "loading": "Loading changelog...",
+      "notFound": "Changelog not found for this version"
+    }
   }
 }

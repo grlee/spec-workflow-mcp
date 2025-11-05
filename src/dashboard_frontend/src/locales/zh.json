@@ -486,5 +486,14 @@
     "cancel": "取消",
     "close": "关闭",
     "jobDescription": "删除超过{{days}}天的记录，按计划{{schedule}}"
+  },
+  "changelog": {
+    "viewChangelog": "查看更改日志",
+    "modal": {
+      "title": "更改日志",
+      "version": "版本",
+      "loading": "正在加载更改日志...",
+      "notFound": "找不到此版本的更改日志"
+    }
   }
 }

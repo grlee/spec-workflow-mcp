@@ -486,5 +486,14 @@
     "cancel": "Annuler",
     "close": "Fermer",
     "jobDescription": "Supprimer les enregistrements de plus de {{days}} jours selon le calendrier: {{schedule}}"
+  },
+  "changelog": {
+    "viewChangelog": "Voir le journal des modifications",
+    "modal": {
+      "title": "Journal des modifications",
+      "version": "Version",
+      "loading": "Chargement du journal des modifications...",
+      "notFound": "Journal des modifications introuvable pour cette version"
+    }
   }
 }

@@ -486,5 +486,14 @@
     "cancel": "취소",
     "close": "닫기",
     "jobDescription": "{{schedule}} 일정에 따라 {{days}}일 이상 된 레코드 삭제"
+  },
+  "changelog": {
+    "viewChangelog": "변경 로그 보기",
+    "modal": {
+      "title": "변경 로그",
+      "version": "버전",
+      "loading": "변경 로그를 로드 중...",
+      "notFound": "이 버전의 변경 로그를 찾을 수 없음"
+    }
   }
 }

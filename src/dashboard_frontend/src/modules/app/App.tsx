@@ -21,6 +21,7 @@ import { LanguageSelector } from '../../components/LanguageSelector';
 import { I18nErrorBoundary } from '../../components/I18nErrorBoundary';
 import { ProjectDropdown } from '../components/ProjectDropdown';
 import { PageNavigationSidebar } from '../components/PageNavigationSidebar';
+import { ChangelogModal } from '../modals/ChangelogModal';
 
 function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const { t } = useTranslation();
@@ -29,6 +30,7 @@ function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
   const { currentProject } = useProjects();
   const { info } = useApi();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showChangelog, setShowChangelog] = useState(false);
 
   // Update the browser tab title when project info is loaded
   useEffect(() => {
@@ -66,9 +68,13 @@ function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
 
             {/* Version Badge */}
             {info?.version && (
-              <span className="hidden lg:inline text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full">
+              <button
+                onClick={() => setShowChangelog(true)}
+                className="hidden lg:inline text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer"
+                title={t('changelog.viewChangelog', 'View changelog')}
+              >
                 v{info.version}
-              </span>
+              </button>
             )}
           </div>
 
@@ -171,9 +177,16 @@ function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
                 {info?.version && (
                   <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                     <div className="text-center">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                      <button
+                        onClick={() => {
+                          setShowChangelog(true);
+                          setMobileMenuOpen(false);
+                        }}
+                        className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                        title={t('changelog.viewChangelog', 'View changelog')}
+                      >
                         Spec-Workflow-MCP v{info.version}
-                      </span>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -182,6 +195,14 @@ function Header({ toggleSidebar }: { toggleSidebar: () => void }) {
           </div>
         </div>
       )}
+
+      {/* Changelog Modal */}
+      <ChangelogModal
+        isOpen={showChangelog}
+        onClose={() => setShowChangelog(false)}
+        version={info?.version || ''}
+        projectId={currentProject?.projectId}
+      />
     </>
   );
 }

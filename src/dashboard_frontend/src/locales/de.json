@@ -486,5 +486,14 @@
     "cancel": "Abbrechen",
     "close": "Schließen",
     "jobDescription": "Löschen Sie Datensätze, die älter als {{days}} Tage sind, nach Zeitplan: {{schedule}}"
+  },
+  "changelog": {
+    "viewChangelog": "Änderungsprotokoll anzeigen",
+    "modal": {
+      "title": "Änderungsprotokoll",
+      "version": "Version",
+      "loading": "Änderungsprotokoll wird geladen...",
+      "notFound": "Änderungsprotokoll für diese Version nicht gefunden"
+    }
   }
 }
