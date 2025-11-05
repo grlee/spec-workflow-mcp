@@ -17,7 +17,7 @@ function formatDate(dateStr?: string, t?: (k: string, o?: any) => string) {
   });
 }
 
-function SearchableSpecDropdown({ specs, selected, onSelect }: { specs: any[]; selected: string; onSelect: (value: string) => void }) {
+function SearchableSpecDropdown({ specs, selected, onSelect, align = 'left' }: { specs: any[]; selected: string; onSelect: (value: string) => void; align?: 'left' | 'right' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ function SearchableSpecDropdown({ specs, selected, onSelect }: { specs: any[]; s
       </button>
 
       {isOpen && (
-        <div className="absolute top-full mt-1 w-full sm:w-80 md:w-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-50 max-h-96 overflow-hidden">
+        <div className={`absolute top-full mt-1 w-full sm:w-80 md:w-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-50 max-h-96 overflow-hidden ${align === 'right' ? 'right-0' : 'left-0'}`}>
           {/* Search Input */}
           <div className="p-3 md:p-4 border-b border-gray-200 dark:border-gray-600">
             <input
@@ -1387,6 +1387,7 @@ function Content() {
               specs={specs}
               selected={selected}
               onSelect={handleSelectSpec}
+              align="right"
             />
           </div>
         </div>

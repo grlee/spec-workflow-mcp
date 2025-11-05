@@ -738,6 +738,7 @@ function Content() {
                 currentOrder={sortOrder}
                 onSortChange={handleSortChange}
                 sortOptions={specSortOptions}
+                align="right"
               />
             </div>
           </div>

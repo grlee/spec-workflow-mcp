@@ -714,6 +714,7 @@ export function LogsPage() {
               currentOrder={sortOrder}
               onSortChange={handleSortChange}
               sortOptions={logSortOptions}
+              align="right"
             />
           </div>
 
