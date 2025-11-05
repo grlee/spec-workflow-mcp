@@ -32,6 +32,7 @@ A Model Context Protocol (MCP) server for structured spec-driven development wit
 - **VSCode Extension** - Integrated sidebar dashboard for VSCode users
 - **Approval Workflow** - Complete approval process with revisions
 - **Task Progress Tracking** - Visual progress bars and detailed status
+- **Implementation Logs** - Searchable logs of all task implementations with code statistics
 - **Multi-Language Support** - Available in 11 languages
 
 ## 🌍 Supported Languages

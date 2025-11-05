@@ -10,6 +10,8 @@ import { WebSocket } from 'ws';
 import { findAvailablePort, validateAndCheckPort } from './utils.js';
 import { parseTasksFromMarkdown } from '../core/task-parser.js';
 import { ProjectManager } from './project-manager.js';
+import { JobScheduler } from './job-scheduler.js';
+import { ImplementationLogManager } from './implementation-log-manager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,6 +29,7 @@ export interface MultiDashboardOptions {
 export class MultiProjectDashboardServer {
   private app: FastifyInstance;
   private projectManager: ProjectManager;
+  private jobScheduler: JobScheduler;
   private options: MultiDashboardOptions;
   private actualPort: number = 0;
   private clients: Set<WebSocketConnection> = new Set();
@@ -35,6 +38,7 @@ export class MultiProjectDashboardServer {
   constructor(options: MultiDashboardOptions = {}) {
     this.options = options;
     this.projectManager = new ProjectManager();
+    this.jobScheduler = new JobScheduler(this.projectManager);
     this.app = fastify({ logger: false });
   }
 
@@ -60,6 +64,9 @@ export class MultiProjectDashboardServer {
 
     // Initialize project manager
     await this.projectManager.initialize();
+
+    // Initialize job scheduler
+    await this.jobScheduler.initialize();
 
     // Register plugins
     await this.app.register(fastifyStatic, {
@@ -667,6 +674,190 @@ export class MultiProjectDashboardServer {
         return reply.code(500).send({ error: `Failed to update task status: ${error.message}` });
       }
     });
+
+    // Add implementation log entry
+    this.app.post('/api/projects/:projectId/specs/:name/implementation-log', async (request, reply) => {
+      const { projectId, name } = request.params as { projectId: string; name: string };
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+
+      try {
+        const logData = request.body as any;
+
+        // Validate artifacts are provided
+        if (!logData.artifacts) {
+          return reply.code(400).send({ error: 'artifacts field is REQUIRED. See get-implementation-logs tool for guidance on artifact structure.' });
+        }
+
+        const specPath = join(project.projectPath, '.spec-workflow', 'specs', name);
+        const logManager = new ImplementationLogManager(specPath);
+        const entry = await logManager.addLogEntry(logData);
+
+        await this.broadcastImplementationLogUpdate(projectId, name);
+        return entry;
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to add implementation log: ${error.message}` });
+      }
+    });
+
+    // Get implementation logs
+    this.app.get('/api/projects/:projectId/specs/:name/implementation-log', async (request, reply) => {
+      const { projectId, name } = request.params as { projectId: string; name: string };
+      const query = request.query as { taskId?: string; search?: string };
+
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+
+      try {
+        const specPath = join(project.projectPath, '.spec-workflow', 'specs', name);
+        const logManager = new ImplementationLogManager(specPath);
+        let logs = await logManager.getAllLogs();
+
+        if (query.taskId) {
+          logs = logs.filter(log => log.taskId === query.taskId);
+        }
+        if (query.search) {
+          logs = await logManager.searchLogs(query.search);
+        }
+
+        return { entries: logs };
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to get implementation logs: ${error.message}` });
+      }
+    });
+
+    // Get implementation log task stats
+    this.app.get('/api/projects/:projectId/specs/:name/implementation-log/task/:taskId/stats', async (request, reply) => {
+      const { projectId, name, taskId } = request.params as { projectId: string; name: string; taskId: string };
+
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+
+      try {
+        const specPath = join(project.projectPath, '.spec-workflow', 'specs', name);
+        const logManager = new ImplementationLogManager(specPath);
+        const stats = await logManager.getTaskStats(taskId);
+
+        return stats;
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to get implementation log stats: ${error.message}` });
+      }
+    });
+
+    // Global settings endpoints
+
+    // Get all automation jobs
+    this.app.get('/api/jobs', async () => {
+      return await this.jobScheduler.getAllJobs();
+    });
+
+    // Create a new automation job
+    this.app.post('/api/jobs', async (request, reply) => {
+      const job = request.body as any;
+
+      if (!job.id || !job.name || !job.type || job.config === undefined || !job.schedule) {
+        return reply.code(400).send({ error: 'Missing required fields: id, name, type, config, schedule' });
+      }
+
+      try {
+        await this.jobScheduler.addJob({
+          id: job.id,
+          name: job.name,
+          type: job.type,
+          enabled: job.enabled !== false,
+          config: job.config,
+          schedule: job.schedule,
+          createdAt: new Date().toISOString()
+        });
+        return { success: true, message: 'Job created successfully' };
+      } catch (error: any) {
+        return reply.code(400).send({ error: error.message });
+      }
+    });
+
+    // Get a specific automation job
+    this.app.get('/api/jobs/:jobId', async (request, reply) => {
+      const { jobId } = request.params as { jobId: string };
+      const settingsManager = new (await import('./settings-manager.js')).SettingsManager();
+
+      try {
+        const job = await settingsManager.getJob(jobId);
+        if (!job) {
+          return reply.code(404).send({ error: 'Job not found' });
+        }
+        return job;
+      } catch (error: any) {
+        return reply.code(500).send({ error: error.message });
+      }
+    });
+
+    // Update an automation job
+    this.app.put('/api/jobs/:jobId', async (request, reply) => {
+      const { jobId } = request.params as { jobId: string };
+      const updates = request.body as any;
+
+      try {
+        await this.jobScheduler.updateJob(jobId, updates);
+        return { success: true, message: 'Job updated successfully' };
+      } catch (error: any) {
+        return reply.code(400).send({ error: error.message });
+      }
+    });
+
+    // Delete an automation job
+    this.app.delete('/api/jobs/:jobId', async (request, reply) => {
+      const { jobId } = request.params as { jobId: string };
+
+      try {
+        await this.jobScheduler.deleteJob(jobId);
+        return { success: true, message: 'Job deleted successfully' };
+      } catch (error: any) {
+        return reply.code(400).send({ error: error.message });
+      }
+    });
+
+    // Manually run a job
+    this.app.post('/api/jobs/:jobId/run', async (request, reply) => {
+      const { jobId } = request.params as { jobId: string };
+
+      try {
+        const result = await this.jobScheduler.runJobManually(jobId);
+        return result;
+      } catch (error: any) {
+        return reply.code(400).send({ error: error.message });
+      }
+    });
+
+    // Get job execution history
+    this.app.get('/api/jobs/:jobId/history', async (request, reply) => {
+      const { jobId } = request.params as { jobId: string };
+      const { limit } = request.query as { limit?: string };
+
+      try {
+        const history = await this.jobScheduler.getJobExecutionHistory(jobId, parseInt(limit || '50'));
+        return history;
+      } catch (error: any) {
+        return reply.code(500).send({ error: error.message });
+      }
+    });
+
+    // Get job statistics
+    this.app.get('/api/jobs/:jobId/stats', async (request, reply) => {
+      const { jobId } = request.params as { jobId: string };
+
+      try {
+        const stats = await this.jobScheduler.getJobStats(jobId);
+        return stats;
+      } catch (error: any) {
+        return reply.code(500).send({ error: error.message });
+      }
+    });
   }
 
   private broadcastToAll(message: any) {
@@ -711,6 +902,28 @@ export class MultiProjectDashboardServer {
     }
   }
 
+  private async broadcastImplementationLogUpdate(projectId: string, specName: string): Promise<void> {
+    try {
+      const project = this.projectManager.getProject(projectId);
+      if (!project) return;
+
+      const specPath = join(project.projectPath, '.spec-workflow', 'specs', specName);
+      const logManager = new ImplementationLogManager(specPath);
+      const logs = await logManager.getAllLogs();
+
+      this.broadcastToProject(projectId, {
+        type: 'implementation-log-update',
+        projectId,
+        data: {
+          specName,
+          entries: logs
+        }
+      });
+    } catch (error) {
+      console.error('Error broadcasting implementation log update:', error);
+    }
+  }
+
   async stop() {
     // Close all WebSocket connections
     this.clients.forEach((connection) => {
@@ -724,6 +937,9 @@ export class MultiProjectDashboardServer {
       }
     });
     this.clients.clear();
+
+    // Stop job scheduler
+    await this.jobScheduler.shutdown();
 
     // Stop project manager
     await this.projectManager.stop();

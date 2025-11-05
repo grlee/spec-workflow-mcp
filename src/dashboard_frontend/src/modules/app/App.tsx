@@ -10,8 +10,10 @@ import { DashboardStatistics } from '../pages/DashboardStatistics';
 import { SpecsPage } from '../pages/SpecsPage';
 import { SteeringPage } from '../pages/SteeringPage';
 import { TasksPage } from '../pages/TasksPage';
+import { LogsPage } from '../pages/LogsPage';
 import { ApprovalsPage } from '../pages/ApprovalsPage';
 import { SpecViewerPage } from '../pages/SpecViewerPage';
+import { SettingsPage } from '../pages/SettingsPage';
 import { NotificationProvider } from '../notifications/NotificationProvider';
 import { VolumeControl } from '../notifications/VolumeControl';
 import { useApi } from '../api/api';
@@ -238,7 +240,9 @@ function AppInner() {
                 <Route path="/specs" element={<SpecsPage />} />
                 <Route path="/specs/view" element={<SpecViewerPage />} />
                 <Route path="/tasks" element={<TasksPage />} />
+                <Route path="/logs" element={<LogsPage />} />
                 <Route path="/approvals" element={<ApprovalsPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             ) : (

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useMemo, useState, useCallback, useEffect } from 'react';
 import { useWs } from '../ws/WebSocketProvider';
+import { ImplementationLogEntry } from '../../types';
 
 export type SpecSummary = {
   name: string;
@@ -106,6 +107,9 @@ type ApiContextType = {
   unarchiveSpec: (name: string) => Promise<{ ok: boolean; status: number }>;
   getSteeringDocument: (name: string) => Promise<{ content: string; lastModified: string }>;
   saveSteeringDocument: (name: string, content: string) => Promise<{ ok: boolean; status: number }>;
+  addImplementationLog: (specName: string, logData: any) => Promise<{ ok: boolean; status: number; data?: any }>;
+  getImplementationLogs: (specName: string, query?: { taskId?: string; search?: string }) => Promise<{ entries: ImplementationLogEntry[] }>;
+  getImplementationLogStats: (specName: string, taskId: string) => Promise<any>;
 };
 
 const ApiContext = createContext<ApiContextType | undefined>(undefined);
@@ -215,6 +219,9 @@ export function ApiProvider({ initial, projectId, children }: ApiProviderProps) 
         unarchiveSpec: async () => ({ ok: false, status: 400 }),
         getSteeringDocument: async () => ({ content: '', lastModified: '' }),
         saveSteeringDocument: async () => ({ ok: false, status: 400 }),
+        addImplementationLog: async () => ({ ok: false, status: 400 }),
+        getImplementationLogs: async () => ({ entries: [] }),
+        getImplementationLogStats: async () => ({}),
       };
     }
 
@@ -250,6 +257,16 @@ export function ApiProvider({ initial, projectId, children }: ApiProviderProps) 
       unarchiveSpec: (name: string) => postJson(`${prefix}/specs/${encodeURIComponent(name)}/unarchive`, {}),
       getSteeringDocument: (name: string) => getJson(`${prefix}/steering/${encodeURIComponent(name)}`),
       saveSteeringDocument: (name: string, content: string) => putJson(`${prefix}/steering/${encodeURIComponent(name)}`, { content }),
+      addImplementationLog: (specName: string, logData: any) => postJson(`${prefix}/specs/${encodeURIComponent(specName)}/implementation-log`, logData),
+      getImplementationLogs: (specName: string, query?: { taskId?: string; search?: string }) => {
+        let url = `${prefix}/specs/${encodeURIComponent(specName)}/implementation-log`;
+        const params = new URLSearchParams();
+        if (query?.taskId) params.append('taskId', query.taskId);
+        if (query?.search) params.append('search', query.search);
+        if (params.toString()) url += `?${params.toString()}`;
+        return getJson(url);
+      },
+      getImplementationLogStats: (specName: string, taskId: string) => getJson(`${prefix}/specs/${encodeURIComponent(specName)}/implementation-log/task/${encodeURIComponent(taskId)}/stats`),
     };
   }, [specs, archivedSpecs, approvals, info, steeringDocuments, projectId, reloadAll]);
 
