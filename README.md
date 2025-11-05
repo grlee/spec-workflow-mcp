@@ -56,23 +56,12 @@ Add to your MCP configuration (see client-specific setup below):
 }
 ```
 
-With auto-started dashboard:
-```json
-{
-  "mcpServers": {
-    "spec-workflow": {
-      "command": "npx",
-      "args": ["-y", "@pimzino/spec-workflow-mcp@latest", "/path/to/your/project", "--AutoStartDashboard"]
-    }
-  }
-}
-```
-
 ### Step 2: Choose your interface
 
 **Option A: Web Dashboard** (Required for CLI users)
+Start the dashboard seperately:
 ```bash
-npx -y @pimzino/spec-workflow-mcp@latest /path/to/your/project --dashboard
+npx -y @pimzino/spec-workflow-mcp@latest /path/to/your/project --dashboard --port 3000
 ```
 
 **Option B: VSCode Extension** (Recommended for VSCode users)

@@ -5,11 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2025-11-03
+## [2.0.0] - 2025-11-03
 
 ### Added
 - Added NEW Unified Multi-Project Dashboard Implementation!
 - 'ESC' key now closes all dialogs and modals in the dashboard.
+- Implementation Log functionality added to the dashboard for each spec, AI Agents will now log detailed information about the implementation of each task. This information is then used by future AI agents to discover existing code and avoid duplication / mistakes when implementing new tasks especially when each task is dependant on the previous task.
+
+### Changed
+- Re-designed the dashboard to be more user friendly and intuitive.
+  - Added a new sidebar menu for the dashboard instead of header navigation.
 
 
 ### Announcement
