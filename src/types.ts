@@ -98,6 +98,63 @@ export interface TaskInfo {
   prompt?: string;
   promptStructured?: PromptSection[];
 }
+
+export interface ImplementationLogEntry {
+  id: string;
+  taskId: string;
+  timestamp: string;
+  summary: string;
+  filesModified: string[];
+  filesCreated: string[];
+  statistics: {
+    linesAdded: number;
+    linesRemoved: number;
+    filesChanged: number;
+  };
+  artifacts: {
+    apiEndpoints?: Array<{
+      method: string;           // GET, POST, PUT, DELETE, PATCH
+      path: string;             // /api/specs/:name/logs
+      purpose: string;          // What this endpoint does
+      requestFormat?: string;   // Request body/params format or example
+      responseFormat?: string;  // Response format or example
+      location: string;         // File path and line number (e.g., "src/server.ts:245")
+    }>;
+    components?: Array<{
+      name: string;             // ComponentName
+      type: string;             // "React", "Vue", "Svelte", etc.
+      purpose: string;          // What the component does
+      location: string;         // File path
+      props?: string;           // Props interface or signature
+      exports?: string[];       // What it exports
+    }>;
+    functions?: Array<{
+      name: string;             // Function/method name
+      purpose: string;          // What it does
+      location: string;         // File path and line
+      signature?: string;       // Function signature
+      isExported: boolean;      // Can it be imported?
+    }>;
+    classes?: Array<{
+      name: string;             // Class name
+      purpose: string;          // What it does
+      location: string;         // File path
+      methods?: string[];       // Public methods
+      isExported: boolean;
+    }>;
+    integrations?: Array<{
+      description: string;      // How frontend connects to backend
+      frontendComponent: string; // Which component
+      backendEndpoint: string;  // Which API endpoint
+      dataFlow: string;         // How data flows
+    }>;
+  };
+}
+
+export interface ImplementationLog {
+  entries: ImplementationLogEntry[];
+  lastUpdated?: string;
+}
 export interface ToolResponse {
   success: boolean;
   message: string;

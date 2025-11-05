@@ -388,6 +388,11 @@
       "noCommentsMessage": "Bitte fügen Sie mindestens einen Kommentar hinzu bevor Sie Überarbeitungen anfordern."
     }
   },
+  "logsPage": {
+    "search": {
+      "placeholder": "Logs durchsuchen..."
+    }
+  },
   "volumeControl": {
     "mute": "Benachrichtigungen stumm schalten",
     "enable": "Benachrichtigungstöne aktivieren",

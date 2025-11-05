@@ -388,6 +388,11 @@
       "noCommentsMessage": "수정을 요청하기 전에 최소 하나의 코멘트를 추가해 주세요."
     }
   },
+  "logsPage": {
+    "search": {
+      "placeholder": "로그 검색..."
+    }
+  },
   "volumeControl": {
     "mute": "Mute notifications",
     "enable": "Enable notification sounds",

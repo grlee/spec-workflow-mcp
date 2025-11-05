@@ -388,6 +388,11 @@
       "noCommentsMessage": "يرجى إضافة تعليق واحد على الأقل قبل طلب المراجعات."
     }
   },
+  "logsPage": {
+    "search": {
+      "placeholder": "البحث في السجلات..."
+    }
+  },
   "volumeControl": {
     "mute": "Mute notifications",
     "enable": "Enable notification sounds",

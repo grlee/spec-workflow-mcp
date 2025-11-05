@@ -388,6 +388,11 @@
       "noCommentsMessage": "Veuillez ajouter au moins un commentaire avant de demander des révisions."
     }
   },
+  "logsPage": {
+    "search": {
+      "placeholder": "Rechercher les journaux..."
+    }
+  },
   "volumeControl": {
     "mute": "Désactiver les notifications",
     "enable": "Activer les sons de notification",

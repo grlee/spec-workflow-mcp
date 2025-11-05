@@ -11,6 +11,7 @@ import { findAvailablePort, validateAndCheckPort } from './utils.js';
 import { parseTasksFromMarkdown } from '../core/task-parser.js';
 import { ProjectManager } from './project-manager.js';
 import { JobScheduler } from './job-scheduler.js';
+import { ImplementationLogManager } from './implementation-log-manager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -674,6 +675,81 @@ export class MultiProjectDashboardServer {
       }
     });
 
+    // Add implementation log entry
+    this.app.post('/api/projects/:projectId/specs/:name/implementation-log', async (request, reply) => {
+      const { projectId, name } = request.params as { projectId: string; name: string };
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+
+      try {
+        const logData = request.body as any;
+
+        // Validate artifacts are provided
+        if (!logData.artifacts) {
+          return reply.code(400).send({ error: 'artifacts field is REQUIRED. See get-implementation-logs tool for guidance on artifact structure.' });
+        }
+
+        const specPath = join(project.projectPath, '.spec-workflow', 'specs', name);
+        const logManager = new ImplementationLogManager(specPath);
+        const entry = await logManager.addLogEntry(logData);
+
+        await this.broadcastImplementationLogUpdate(projectId, name);
+        return entry;
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to add implementation log: ${error.message}` });
+      }
+    });
+
+    // Get implementation logs
+    this.app.get('/api/projects/:projectId/specs/:name/implementation-log', async (request, reply) => {
+      const { projectId, name } = request.params as { projectId: string; name: string };
+      const query = request.query as { taskId?: string; search?: string };
+
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+
+      try {
+        const specPath = join(project.projectPath, '.spec-workflow', 'specs', name);
+        const logManager = new ImplementationLogManager(specPath);
+        let logs = await logManager.getAllLogs();
+
+        if (query.taskId) {
+          logs = logs.filter(log => log.taskId === query.taskId);
+        }
+        if (query.search) {
+          logs = await logManager.searchLogs(query.search);
+        }
+
+        return { entries: logs };
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to get implementation logs: ${error.message}` });
+      }
+    });
+
+    // Get implementation log task stats
+    this.app.get('/api/projects/:projectId/specs/:name/implementation-log/task/:taskId/stats', async (request, reply) => {
+      const { projectId, name, taskId } = request.params as { projectId: string; name: string; taskId: string };
+
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+
+      try {
+        const specPath = join(project.projectPath, '.spec-workflow', 'specs', name);
+        const logManager = new ImplementationLogManager(specPath);
+        const stats = await logManager.getTaskStats(taskId);
+
+        return stats;
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to get implementation log stats: ${error.message}` });
+      }
+    });
+
     // Global settings endpoints
 
     // Get all automation jobs
@@ -823,6 +899,28 @@ export class MultiProjectDashboardServer {
       });
     } catch (error) {
       console.error('Error broadcasting task update:', error);
+    }
+  }
+
+  private async broadcastImplementationLogUpdate(projectId: string, specName: string): Promise<void> {
+    try {
+      const project = this.projectManager.getProject(projectId);
+      if (!project) return;
+
+      const specPath = join(project.projectPath, '.spec-workflow', 'specs', specName);
+      const logManager = new ImplementationLogManager(specPath);
+      const logs = await logManager.getAllLogs();
+
+      this.broadcastToProject(projectId, {
+        type: 'implementation-log-update',
+        projectId,
+        data: {
+          specName,
+          entries: logs
+        }
+      });
+    } catch (error) {
+      console.error('Error broadcasting implementation log update:', error);
     }
   }
 

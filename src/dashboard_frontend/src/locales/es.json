@@ -388,6 +388,11 @@
       "noCommentsMessage": "Por favor agrega al menos un comentario antes de solicitar revisiones."
     }
   },
+  "logsPage": {
+    "search": {
+      "placeholder": "Buscar registros..."
+    }
+  },
   "volumeControl": {
     "mute": "Silenciar notificaciones",
     "enable": "Habilitar sonidos de notificación",

@@ -388,6 +388,11 @@
       "noCommentsMessage": "Please add at least one comment before requesting revisions."
     }
   },
+  "logsPage": {
+    "search": {
+      "placeholder": "Search logs..."
+    }
+  },
   "volumeControl": {
     "mute": "Mute notifications",
     "enable": "Enable notification sounds",

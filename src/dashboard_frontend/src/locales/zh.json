@@ -388,6 +388,11 @@
       "noCommentsMessage": "在请求修订之前，请至少添加一条评论。"
     }
   },
+  "logsPage": {
+    "search": {
+      "placeholder": "搜索日志..."
+    }
+  },
   "volumeControl": {
     "mute": "静音通知",
     "enable": "启用通知声音",

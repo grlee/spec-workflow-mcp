@@ -14,6 +14,7 @@ import { ApprovalStorage } from './approval-storage.js';
 import { parseTasksFromMarkdown } from '../core/task-parser.js';
 import { SpecArchiveService } from '../core/archive-service.js';
 import { ProjectRegistry } from '../core/project-registry.js';
+import { ImplementationLogManager } from './implementation-log-manager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -657,6 +658,100 @@ export class DashboardServer {
       }
     });
 
+    // Implementation log endpoints
+    this.app.post('/api/specs/:name/implementation-log', async (request, reply) => {
+      const { name } = request.params as { name: string };
+      const { taskId, summary, filesModified, filesCreated, statistics, artifacts } = request.body as {
+        taskId: string;
+        summary: string;
+        filesModified?: string[];
+        filesCreated?: string[];
+        statistics: {
+          linesAdded: number;
+          linesRemoved: number;
+        };
+        artifacts: any;
+      };
+
+      if (!taskId || !summary) {
+        return reply.code(400).send({ error: 'taskId and summary are required' });
+      }
+
+      if (!artifacts) {
+        return reply.code(400).send({ error: 'artifacts field is REQUIRED. See get-implementation-logs tool for guidance on artifact structure.' });
+      }
+
+      try {
+        const specPath = join(this.options.projectPath, '.spec-workflow', 'specs', name);
+        const logManager = new ImplementationLogManager(specPath);
+
+        const entry = await logManager.addLogEntry({
+          taskId,
+          timestamp: new Date().toISOString(),
+          summary,
+          filesModified: filesModified || [],
+          filesCreated: filesCreated || [],
+          statistics: {
+            linesAdded: statistics?.linesAdded || 0,
+            linesRemoved: statistics?.linesRemoved || 0,
+            filesChanged: (filesModified?.length || 0) + (filesCreated?.length || 0)
+          },
+          artifacts
+        });
+
+        // Broadcast log update
+        this.broadcastImplementationLogUpdate(name);
+
+        return {
+          success: true,
+          message: `Implementation logged for task '${taskId}'`,
+          entry
+        };
+      } catch (error: any) {
+        reply.code(500).send({ error: `Failed to log implementation: ${error.message}` });
+      }
+    });
+
+    // Get all implementation logs for a spec
+    this.app.get('/api/specs/:name/implementation-log', async (request, reply) => {
+      const { name } = request.params as { name: string };
+      const { taskId, search } = request.query as { taskId?: string; search?: string };
+
+      try {
+        const specPath = join(this.options.projectPath, '.spec-workflow', 'specs', name);
+        const logManager = new ImplementationLogManager(specPath);
+
+        let entries;
+        if (taskId) {
+          entries = await logManager.getTaskLogs(taskId);
+        } else if (search) {
+          entries = await logManager.searchLogs(search);
+        } else {
+          entries = await logManager.getAllLogs();
+        }
+
+        return { entries };
+      } catch (error: any) {
+        reply.code(500).send({ error: `Failed to get implementation logs: ${error.message}` });
+      }
+    });
+
+    // Get task implementation statistics
+    this.app.get('/api/specs/:name/implementation-log/task/:taskId/stats', async (request, reply) => {
+      const { name, taskId } = request.params as { name: string; taskId: string };
+
+      try {
+        const specPath = join(this.options.projectPath, '.spec-workflow', 'specs', name);
+        const logManager = new ImplementationLogManager(specPath);
+
+        const stats = await logManager.getTaskStats(taskId);
+
+        return stats;
+      } catch (error: any) {
+        reply.code(500).send({ error: `Failed to get task stats: ${error.message}` });
+      }
+    });
+
 
     // Approval endpoints
     this.app.post('/api/approvals/:id/approve', async (request, reply) => {
@@ -879,6 +974,31 @@ export class DashboardServer {
       });
     } catch (error) {
       // Error broadcasting task update
+    }
+  }
+
+  private async broadcastImplementationLogUpdate(specName: string) {
+    try {
+      const specPath = join(this.options.projectPath, '.spec-workflow', 'specs', specName);
+      const logManager = new ImplementationLogManager(specPath);
+      const entries = await logManager.getAllLogs();
+
+      const message = JSON.stringify({
+        type: 'implementation-log-update',
+        data: {
+          specName,
+          entries
+        },
+      });
+
+      this.clients.forEach((client) => {
+        if (client.readyState === 1) {
+          // WebSocket.OPEN
+          client.send(message);
+        }
+      });
+    } catch (error) {
+      // Error broadcasting implementation log update
     }
   }
 

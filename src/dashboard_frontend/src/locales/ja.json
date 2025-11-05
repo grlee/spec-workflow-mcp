@@ -388,6 +388,11 @@
       "noCommentsMessage": "修正を依頼する前に少なくとも1つコメントを追加してください。"
     }
   },
+  "logsPage": {
+    "search": {
+      "placeholder": "ログを検索..."
+    }
+  },
   "volumeControl": {
     "mute": "通知をミュート",
     "enable": "通知音を有効にする",

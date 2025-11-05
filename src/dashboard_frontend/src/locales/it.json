@@ -388,6 +388,11 @@
       "noCommentsMessage": "Aggiungi almeno un commento prima di richiedere revisioni."
     }
   },
+  "logsPage": {
+    "search": {
+      "placeholder": "Cerca log..."
+    }
+  },
   "volumeControl": {
     "mute": "Mute notifications",
     "enable": "Enable notification sounds",
