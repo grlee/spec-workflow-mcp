@@ -8,7 +8,8 @@
     "specs": "仕様書",
     "tasks": "タスク",
     "approvals": "承認",
-    "settings": "設定"
+    "settings": "設定",
+    "logs": "実装ログ"
   },
   "connectionStatus": {
     "connected": "接続済み",
@@ -389,9 +390,71 @@
     }
   },
   "logsPage": {
+    "header": {
+      "title": "実装ログ"
+    },
     "search": {
       "placeholder": "ログを検索..."
-    }
+    },
+    "specDropdown": {
+      "selectPlaceholder": "仕様を選択",
+      "searchPlaceholder": "仕様を検索...",
+      "noSpecsFound": "仕様が見つかりません"
+    },
+    "filter": {
+      "label": "タスクでフィルター",
+      "all": "すべて",
+      "taskPrefix": "タスク"
+    },
+    "sort": {
+      "timestamp": "日時",
+      "timestampDesc": "ログタイムスタンプでソート",
+      "taskId": "タスクID",
+      "taskIdDesc": "タスク識別子でソート",
+      "linesAdded": "追加行数",
+      "linesAddedDesc": "追加されたコード行数でソート",
+      "filesChanged": "変更ファイル数",
+      "filesChangedDesc": "変更されたファイル数でソート"
+    },
+    "stats": {
+      "title": "コード統計",
+      "linesAdded": "追加行数",
+      "linesRemoved": "削除行数",
+      "filesChanged": "変更ファイル数",
+      "netChange": "差分",
+      "totalEntries": "合計エントリ"
+    },
+    "files": {
+      "modified": "変更ファイル",
+      "created": "作成ファイル"
+    },
+    "artifacts": {
+      "title": "アーティファクト",
+      "apiEndpoints": "APIエンドポイント",
+      "components": "コンポーネント",
+      "functions": "関数",
+      "classes": "クラス",
+      "integrations": "統合",
+      "details": {
+        "request": "リクエスト:",
+        "response": "レスポンス:",
+        "props": "プロパティ:",
+        "exports": "エクスポート:",
+        "exported": "エクスポート済み",
+        "private": "プライベート",
+        "methods": "メソッド:",
+        "component": "コンポーネント:",
+        "endpoint": "エンドポイント:",
+        "flow": "フロー:"
+      }
+    },
+    "empty": {
+      "selectSpec": "仕様を選択して実装ログを表示してください",
+      "noResults": "検索フィルターに一致するログがありません",
+      "noLogs": "この仕様の実装ログはまだありません"
+    },
+    "loading": "ログを読み込み中...",
+    "taskBadge": "タスク"
   },
   "volumeControl": {
     "mute": "通知をミュート",

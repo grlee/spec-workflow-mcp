@@ -60,6 +60,7 @@ function ArtifactSection({
   type: 'api' | 'component' | 'function' | 'class' | 'integration';
   color: string;
 }) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!items || items.length === 0) return null;
@@ -114,12 +115,12 @@ function ArtifactSection({
                   <div className="text-gray-600 dark:text-gray-400">{item.purpose}</div>
                   {item.requestFormat && (
                     <div className="text-xs text-gray-500 dark:text-gray-500">
-                      Request: {item.requestFormat}
+                      {t('logsPage.artifacts.details.request')} {item.requestFormat}
                     </div>
                   )}
                   {item.responseFormat && (
                     <div className="text-xs text-gray-500 dark:text-gray-500">
-                      Response: {item.responseFormat}
+                      {t('logsPage.artifacts.details.response')} {item.responseFormat}
                     </div>
                   )}
                   <div className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded font-mono w-fit">
@@ -137,12 +138,12 @@ function ArtifactSection({
                   <div className="text-gray-600 dark:text-gray-400">{item.purpose}</div>
                   {item.props && (
                     <div className="text-xs text-gray-500 dark:text-gray-500">
-                      Props: {item.props}
+                      {t('logsPage.artifacts.details.props')} {item.props}
                     </div>
                   )}
                   {item.exports && item.exports.length > 0 && (
                     <div className="text-xs text-gray-500 dark:text-gray-500">
-                      Exports: {item.exports.join(', ')}
+                      {t('logsPage.artifacts.details.exports')} {item.exports.join(', ')}
                     </div>
                   )}
                   <div className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded font-mono w-fit">
@@ -164,9 +165,9 @@ function ArtifactSection({
                   )}
                   <div className="text-xs">
                     {item.isExported ? (
-                      <span className="text-green-600 dark:text-green-400 font-semibold">Exported</span>
+                      <span className="text-green-600 dark:text-green-400 font-semibold">{t('logsPage.artifacts.details.exported')}</span>
                     ) : (
-                      <span className="text-gray-500 dark:text-gray-400">Private</span>
+                      <span className="text-gray-500 dark:text-gray-400">{t('logsPage.artifacts.details.private')}</span>
                     )}
                   </div>
                   <div className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded font-mono w-fit">
@@ -183,14 +184,14 @@ function ArtifactSection({
                   <div className="text-gray-600 dark:text-gray-400">{item.purpose}</div>
                   {item.methods && item.methods.length > 0 && (
                     <div className="text-xs text-gray-500 dark:text-gray-500">
-                      Methods: {item.methods.join(', ')}
+                      {t('logsPage.artifacts.details.methods')} {item.methods.join(', ')}
                     </div>
                   )}
                   <div className="text-xs">
                     {item.isExported ? (
-                      <span className="text-green-600 dark:text-green-400 font-semibold">Exported</span>
+                      <span className="text-green-600 dark:text-green-400 font-semibold">{t('logsPage.artifacts.details.exported')}</span>
                     ) : (
-                      <span className="text-gray-500 dark:text-gray-400">Private</span>
+                      <span className="text-gray-500 dark:text-gray-400">{t('logsPage.artifacts.details.private')}</span>
                     )}
                   </div>
                   <div className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded font-mono w-fit">
@@ -203,13 +204,13 @@ function ArtifactSection({
                 <div className="space-y-1">
                   <div className="text-gray-600 dark:text-gray-400 font-medium">{item.description}</div>
                   <div className="text-xs text-gray-500 dark:text-gray-500">
-                    Component: {item.frontendComponent}
+                    {t('logsPage.artifacts.details.component')} {item.frontendComponent}
                   </div>
                   <div className="text-xs text-gray-500 dark:text-gray-500">
-                    Endpoint: {item.backendEndpoint}
+                    {t('logsPage.artifacts.details.endpoint')} {item.backendEndpoint}
                   </div>
                   <div className="text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 p-1 rounded">
-                    Flow: {item.dataFlow}
+                    {t('logsPage.artifacts.details.flow')} {item.dataFlow}
                   </div>
                 </div>
               )}
@@ -266,7 +267,7 @@ function SearchableSpecDropdown({ specs, selected, onSelect }: { specs: any[]; s
         className="flex items-center justify-between w-full sm:w-auto md:w-auto min-w-[200px] md:min-w-[240px] px-3 py-2 md:px-4 md:py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
       >
         <span className="truncate">
-          {selectedSpec ? selectedSpec.displayName : 'Select Specification'}
+          {selectedSpec ? selectedSpec.displayName : t('logsPage.specDropdown.selectPlaceholder')}
         </span>
         <svg
           className={`w-4 h-4 ml-2 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -283,7 +284,7 @@ function SearchableSpecDropdown({ specs, selected, onSelect }: { specs: any[]; s
           <div className="p-3 md:p-4 border-b border-gray-200 dark:border-gray-600">
             <input
               type="text"
-              placeholder="Search specs..."
+              placeholder={t('logsPage.specDropdown.searchPlaceholder')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-md text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -303,7 +304,7 @@ function SearchableSpecDropdown({ specs, selected, onSelect }: { specs: any[]; s
             ))}
             {filteredSpecs.length === 0 && (
               <div className="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                No specs found
+                {t('logsPage.specDropdown.noSpecsFound')}
               </div>
             )}
           </div>
@@ -318,6 +319,7 @@ interface LogEntryProps {
 }
 
 function LogEntryCard({ entry }: LogEntryProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -326,7 +328,7 @@ function LogEntryCard({ entry }: LogEntryProps) {
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <span className="inline-block px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded text-xs font-medium">
-              Task {entry.taskId}
+              {t('logsPage.taskBadge', 'Task')} {entry.taskId}
             </span>
             <span className="text-sm text-gray-500 dark:text-gray-400">
               {formatDate(entry.timestamp)}
@@ -353,22 +355,22 @@ function LogEntryCard({ entry }: LogEntryProps) {
         <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-4">
           {/* Code Statistics */}
           <div>
-            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Code Statistics</h4>
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('logsPage.stats.title')}</h4>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div className="bg-green-50 dark:bg-green-900/20 rounded p-2">
-                <div className="text-xs text-gray-600 dark:text-gray-400">Lines Added</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">{t('logsPage.stats.linesAdded')}</div>
                 <div className="text-lg font-semibold text-green-600 dark:text-green-400">+{entry.statistics.linesAdded}</div>
               </div>
               <div className="bg-red-50 dark:bg-red-900/20 rounded p-2">
-                <div className="text-xs text-gray-600 dark:text-gray-400">Lines Removed</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">{t('logsPage.stats.linesRemoved')}</div>
                 <div className="text-lg font-semibold text-red-600 dark:text-red-400">-{entry.statistics.linesRemoved}</div>
               </div>
               <div className="bg-blue-50 dark:bg-blue-900/20 rounded p-2">
-                <div className="text-xs text-gray-600 dark:text-gray-400">Files Changed</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">{t('logsPage.stats.filesChanged')}</div>
                 <div className="text-lg font-semibold text-blue-600 dark:text-blue-400">{entry.statistics.filesChanged}</div>
               </div>
               <div className="bg-purple-50 dark:bg-purple-900/20 rounded p-2">
-                <div className="text-xs text-gray-600 dark:text-gray-400">Net Change</div>
+                <div className="text-xs text-gray-600 dark:text-gray-400">{t('logsPage.stats.netChange')}</div>
                 <div className="text-lg font-semibold text-purple-600 dark:text-purple-400">{entry.statistics.linesAdded - entry.statistics.linesRemoved}</div>
               </div>
             </div>
@@ -377,7 +379,7 @@ function LogEntryCard({ entry }: LogEntryProps) {
           {/* Files Modified */}
           {entry.filesModified.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Files Modified ({entry.filesModified.length})</h4>
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('logsPage.files.modified')} ({entry.filesModified.length})</h4>
               <div className="space-y-1">
                 {entry.filesModified.map((file, idx) => (
                   <div key={idx} className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
@@ -394,7 +396,7 @@ function LogEntryCard({ entry }: LogEntryProps) {
           {/* Files Created */}
           {entry.filesCreated.length > 0 && (
             <div>
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Files Created ({entry.filesCreated.length})</h4>
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{t('logsPage.files.created')} ({entry.filesCreated.length})</h4>
               <div className="space-y-1">
                 {entry.filesCreated.map((file, idx) => (
                   <div key={idx} className="text-sm text-gray-600 dark:text-gray-400 flex items-center">
@@ -412,12 +414,12 @@ function LogEntryCard({ entry }: LogEntryProps) {
           {hasAnyArtifacts(entry.artifacts) && (
             <div>
               <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                Artifacts ({getTotalArtifactCount(entry.artifacts)})
+                {t('logsPage.artifacts.title')} ({getTotalArtifactCount(entry.artifacts)})
               </h4>
               <div className="space-y-2">
                 {entry.artifacts.apiEndpoints && entry.artifacts.apiEndpoints.length > 0 && (
                   <ArtifactSection
-                    title="API Endpoints"
+                    title={t('logsPage.artifacts.apiEndpoints')}
                     icon={GlobeAltIcon}
                     items={entry.artifacts.apiEndpoints}
                     type="api"
@@ -427,7 +429,7 @@ function LogEntryCard({ entry }: LogEntryProps) {
 
                 {entry.artifacts.components && entry.artifacts.components.length > 0 && (
                   <ArtifactSection
-                    title="Components"
+                    title={t('logsPage.artifacts.components')}
                     icon={CubeIcon}
                     items={entry.artifacts.components}
                     type="component"
@@ -437,7 +439,7 @@ function LogEntryCard({ entry }: LogEntryProps) {
 
                 {entry.artifacts.functions && entry.artifacts.functions.length > 0 && (
                   <ArtifactSection
-                    title="Functions"
+                    title={t('logsPage.artifacts.functions')}
                     icon={CodeBracketSquareIcon}
                     items={entry.artifacts.functions}
                     type="function"
@@ -447,7 +449,7 @@ function LogEntryCard({ entry }: LogEntryProps) {
 
                 {entry.artifacts.classes && entry.artifacts.classes.length > 0 && (
                   <ArtifactSection
-                    title="Classes"
+                    title={t('logsPage.artifacts.classes')}
                     icon={CircleStackIcon}
                     items={entry.artifacts.classes}
                     type="class"
@@ -457,7 +459,7 @@ function LogEntryCard({ entry }: LogEntryProps) {
 
                 {entry.artifacts.integrations && entry.artifacts.integrations.length > 0 && (
                   <ArtifactSection
-                    title="Integrations"
+                    title={t('logsPage.artifacts.integrations')}
                     icon={LinkIcon}
                     items={entry.artifacts.integrations}
                     type="integration"
@@ -650,8 +652,8 @@ export function LogsPage() {
   const logSortOptions = [
     {
       id: 'timestamp',
-      label: 'Date/Time',
-      description: 'Sort by log timestamp',
+      label: t('logsPage.sort.timestamp'),
+      description: t('logsPage.sort.timestampDesc'),
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -660,8 +662,8 @@ export function LogsPage() {
     },
     {
       id: 'taskId',
-      label: 'Task ID',
-      description: 'Sort by task identifier',
+      label: t('logsPage.sort.taskId'),
+      description: t('logsPage.sort.taskIdDesc'),
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
@@ -670,8 +672,8 @@ export function LogsPage() {
     },
     {
       id: 'linesAdded',
-      label: 'Lines Added',
-      description: 'Sort by lines of code added',
+      label: t('logsPage.sort.linesAdded'),
+      description: t('logsPage.sort.linesAddedDesc'),
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -680,8 +682,8 @@ export function LogsPage() {
     },
     {
       id: 'filesChanged',
-      label: 'Files Changed',
-      description: 'Sort by number of files modified',
+      label: t('logsPage.sort.filesChanged'),
+      description: t('logsPage.sort.filesChangedDesc'),
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -694,7 +696,7 @@ export function LogsPage() {
     <div className="w-full h-full flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 md:p-6">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Implementation Logs</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">{t('logsPage.header.title')}</h1>
 
         {/* Controls */}
         <div className="space-y-4">
@@ -723,7 +725,7 @@ export function LogsPage() {
           {uniqueTasks.length > 0 && (
             <div>
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">
-                Filter by Task
+                {t('logsPage.filter.label')}
               </label>
               <div className="flex flex-wrap gap-2">
                 <button
@@ -734,7 +736,7 @@ export function LogsPage() {
                       : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                   }`}
                 >
-                  All ({logs.length})
+                  {t('logsPage.filter.all')} ({logs.length})
                 </button>
                 {uniqueTasks.map(taskId => {
                   const count = logs.filter(log => log.taskId === taskId).length;
@@ -748,7 +750,7 @@ export function LogsPage() {
                           : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                       }`}
                     >
-                      Task {taskId} ({count})
+                      {t('logsPage.filter.taskPrefix')} {taskId} ({count})
                     </button>
                   );
                 })}
@@ -763,19 +765,19 @@ export function LogsPage() {
         <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 md:px-6 py-4">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
-              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Total Entries</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">{t('logsPage.stats.totalEntries')}</div>
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.totalEntries}</div>
             </div>
             <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
-              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Lines Added</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">{t('logsPage.stats.linesAdded')}</div>
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">+{stats.totalLinesAdded}</div>
             </div>
             <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
-              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Lines Removed</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">{t('logsPage.stats.linesRemoved')}</div>
               <div className="text-2xl font-bold text-red-600 dark:text-red-400">-{stats.totalLinesRemoved}</div>
             </div>
             <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-3">
-              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">Files Changed</div>
+              <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">{t('logsPage.stats.filesChanged')}</div>
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{stats.totalFiles}</div>
             </div>
           </div>
@@ -787,7 +789,7 @@ export function LogsPage() {
         {!selectedSpec ? (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <p className="text-gray-500 dark:text-gray-400">Select a specification to view implementation logs</p>
+              <p className="text-gray-500 dark:text-gray-400">{t('logsPage.empty.selectSpec')}</p>
             </div>
           </div>
         ) : error ? (
@@ -796,15 +798,15 @@ export function LogsPage() {
           </div>
         ) : loading ? (
           <div className="flex items-center justify-center h-64">
-            <div className="text-gray-500 dark:text-gray-400">Loading logs...</div>
+            <div className="text-gray-500 dark:text-gray-400">{t('logsPage.loading')}</div>
           </div>
         ) : filteredAndSortedLogs.length === 0 ? (
           <div className="flex items-center justify-center h-64">
             <div className="text-center">
               <p className="text-gray-500 dark:text-gray-400">
                 {search || taskFilter
-                  ? 'No logs match your search filters'
-                  : 'No implementation logs yet for this specification'}
+                  ? t('logsPage.empty.noResults')
+                  : t('logsPage.empty.noLogs')}
               </p>
             </div>
           </div>

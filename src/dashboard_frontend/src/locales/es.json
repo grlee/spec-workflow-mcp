@@ -8,7 +8,8 @@
     "specs": "Especificaciones",
     "tasks": "Tareas",
     "approvals": "Aprobaciones",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "logs": "Registros de Implementación"
   },
   "connectionStatus": {
     "connected": "Conectado",
@@ -389,9 +390,71 @@
     }
   },
   "logsPage": {
+    "header": {
+      "title": "Registros de Implementación"
+    },
     "search": {
       "placeholder": "Buscar registros..."
-    }
+    },
+    "specDropdown": {
+      "selectPlaceholder": "Seleccionar Especificación",
+      "searchPlaceholder": "Buscar especificaciones...",
+      "noSpecsFound": "No se encontraron especificaciones"
+    },
+    "filter": {
+      "label": "Filtrar por Tarea",
+      "all": "Todas",
+      "taskPrefix": "Tarea"
+    },
+    "sort": {
+      "timestamp": "Fecha/Hora",
+      "timestampDesc": "Ordenar por timestamp del registro",
+      "taskId": "ID de Tarea",
+      "taskIdDesc": "Ordenar por identificador de tarea",
+      "linesAdded": "Líneas Agregadas",
+      "linesAddedDesc": "Ordenar por líneas de código agregadas",
+      "filesChanged": "Archivos Modificados",
+      "filesChangedDesc": "Ordenar por número de archivos modificados"
+    },
+    "stats": {
+      "title": "Estadísticas de Código",
+      "linesAdded": "Líneas Agregadas",
+      "linesRemoved": "Líneas Eliminadas",
+      "filesChanged": "Archivos Modificados",
+      "netChange": "Cambio Neto",
+      "totalEntries": "Entradas Totales"
+    },
+    "files": {
+      "modified": "Archivos Modificados",
+      "created": "Archivos Creados"
+    },
+    "artifacts": {
+      "title": "Artefactos",
+      "apiEndpoints": "Endpoints de API",
+      "components": "Componentes",
+      "functions": "Funciones",
+      "classes": "Clases",
+      "integrations": "Integraciones",
+      "details": {
+        "request": "Solicitud:",
+        "response": "Respuesta:",
+        "props": "Props:",
+        "exports": "Exportaciones:",
+        "exported": "Exportado",
+        "private": "Privado",
+        "methods": "Métodos:",
+        "component": "Componente:",
+        "endpoint": "Endpoint:",
+        "flow": "Flujo:"
+      }
+    },
+    "empty": {
+      "selectSpec": "Seleccionar una especificación para ver los registros de implementación",
+      "noResults": "Ningún registro coincide con sus filtros de búsqueda",
+      "noLogs": "Sin registros de implementación aún para esta especificación"
+    },
+    "loading": "Cargando registros...",
+    "taskBadge": "Tarea"
   },
   "volumeControl": {
     "mute": "Silenciar notificaciones",

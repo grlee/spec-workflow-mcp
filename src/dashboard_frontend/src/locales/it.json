@@ -8,7 +8,8 @@
     "specs": "Spec",
     "tasks": "Task",
     "approvals": "Approvazioni",
-    "settings": "Impostazioni"
+    "settings": "Impostazioni",
+    "logs": "Log di Implementazione"
   },
   "connectionStatus": {
     "connected": "Connesso",
@@ -389,9 +390,71 @@
     }
   },
   "logsPage": {
+    "header": {
+      "title": "Log di Implementazione"
+    },
     "search": {
       "placeholder": "Cerca log..."
-    }
+    },
+    "specDropdown": {
+      "selectPlaceholder": "Seleziona Specifica",
+      "searchPlaceholder": "Cerca specifiche...",
+      "noSpecsFound": "Nessuna specifica trovata"
+    },
+    "filter": {
+      "label": "Filtra per Attività",
+      "all": "Tutto",
+      "taskPrefix": "Attività"
+    },
+    "sort": {
+      "timestamp": "Data/Ora",
+      "timestampDesc": "Ordina per timestamp del log",
+      "taskId": "ID Attività",
+      "taskIdDesc": "Ordina per identificativo dell'attività",
+      "linesAdded": "Righe Aggiunte",
+      "linesAddedDesc": "Ordina per righe di codice aggiunte",
+      "filesChanged": "File Modificati",
+      "filesChangedDesc": "Ordina per numero di file modificati"
+    },
+    "stats": {
+      "title": "Statistiche Codice",
+      "linesAdded": "Righe Aggiunte",
+      "linesRemoved": "Righe Rimosse",
+      "filesChanged": "File Modificati",
+      "netChange": "Cambio Netto",
+      "totalEntries": "Totale Voci"
+    },
+    "files": {
+      "modified": "File Modificati",
+      "created": "File Creati"
+    },
+    "artifacts": {
+      "title": "Artefatti",
+      "apiEndpoints": "Endpoint API",
+      "components": "Componenti",
+      "functions": "Funzioni",
+      "classes": "Classi",
+      "integrations": "Integrazioni",
+      "details": {
+        "request": "Richiesta:",
+        "response": "Risposta:",
+        "props": "Props:",
+        "exports": "Esportazioni:",
+        "exported": "Esportato",
+        "private": "Privato",
+        "methods": "Metodi:",
+        "component": "Componente:",
+        "endpoint": "Endpoint:",
+        "flow": "Flusso:"
+      }
+    },
+    "empty": {
+      "selectSpec": "Seleziona una specifica per visualizzare i log di implementazione",
+      "noResults": "Nessun log corrisponde ai tuoi filtri di ricerca",
+      "noLogs": "Nessun log di implementazione ancora per questa specifica"
+    },
+    "loading": "Caricamento log...",
+    "taskBadge": "Attività"
   },
   "volumeControl": {
     "mute": "Mute notifications",

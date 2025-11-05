@@ -8,6 +8,7 @@
     "specs": "المواصفات",
     "tasks": "المهام",
     "approvals": "الموافقات",
+    "logs": "سجلات التنفيذ",
     "settings": "الإعدادات"
   },
   "connectionStatus": {
@@ -389,9 +390,71 @@
     }
   },
   "logsPage": {
+    "header": {
+      "title": "سجلات التنفيذ"
+    },
     "search": {
       "placeholder": "البحث في السجلات..."
-    }
+    },
+    "specDropdown": {
+      "selectPlaceholder": "اختر المواصفات",
+      "searchPlaceholder": "البحث في المواصفات...",
+      "noSpecsFound": "لم يتم العثور على مواصفات"
+    },
+    "filter": {
+      "label": "تصفية حسب المهمة",
+      "all": "الكل",
+      "taskPrefix": "المهمة"
+    },
+    "sort": {
+      "timestamp": "التاريخ/الوقت",
+      "timestampDesc": "الترتيب حسب طابع زمني للسجل",
+      "taskId": "معرّف المهمة",
+      "taskIdDesc": "الترتيب حسب معرّف المهمة",
+      "linesAdded": "الأسطر المضافة",
+      "linesAddedDesc": "الترتيب حسب أسطر الكود المضافة",
+      "filesChanged": "الملفات المتغيرة",
+      "filesChangedDesc": "الترتيب حسب عدد الملفات المعدلة"
+    },
+    "stats": {
+      "title": "إحصائيات الكود",
+      "linesAdded": "الأسطر المضافة",
+      "linesRemoved": "الأسطر المحذوفة",
+      "filesChanged": "الملفات المتغيرة",
+      "netChange": "التغيير الصافي",
+      "totalEntries": "إجمالي الإدخالات"
+    },
+    "files": {
+      "modified": "الملفات المعدلة",
+      "created": "الملفات المنشأة"
+    },
+    "artifacts": {
+      "title": "المكونات الموضعية",
+      "apiEndpoints": "نقاط نهاية API",
+      "components": "المكونات",
+      "functions": "الدوال",
+      "classes": "الفئات",
+      "integrations": "التكاملات",
+      "details": {
+        "request": "الطلب:",
+        "response": "الرد:",
+        "props": "الخصائص:",
+        "exports": "الصادرات:",
+        "exported": "مُصدَّر",
+        "private": "خاص",
+        "methods": "الطرق:",
+        "component": "المكون:",
+        "endpoint": "نقطة النهاية:",
+        "flow": "التدفق:"
+      }
+    },
+    "empty": {
+      "selectSpec": "اختر مواصفات لعرض سجلات التنفيذ",
+      "noResults": "لا توجد سجلات تطابق مرشحات البحث الخاصة بك",
+      "noLogs": "لا توجد سجلات تنفيذ حتى الآن لهذه المواصفات"
+    },
+    "loading": "جاري تحميل السجلات...",
+    "taskBadge": "المهمة"
   },
   "volumeControl": {
     "mute": "Mute notifications",

@@ -8,7 +8,8 @@
     "specs": "规范",
     "tasks": "任务",
     "approvals": "审批",
-    "settings": "设置"
+    "settings": "设置",
+    "logs": "实现日志"
   },
   "connectionStatus": {
     "connected": "已连接",
@@ -389,9 +390,71 @@
     }
   },
   "logsPage": {
+    "header": {
+      "title": "实现日志"
+    },
     "search": {
       "placeholder": "搜索日志..."
-    }
+    },
+    "specDropdown": {
+      "selectPlaceholder": "选择规范",
+      "searchPlaceholder": "搜索规范...",
+      "noSpecsFound": "未找到规范"
+    },
+    "filter": {
+      "label": "按任务过滤",
+      "all": "全部",
+      "taskPrefix": "任务"
+    },
+    "sort": {
+      "timestamp": "日期/时间",
+      "timestampDesc": "按日志时间戳排序",
+      "taskId": "任务ID",
+      "taskIdDesc": "按任务标识符排序",
+      "linesAdded": "添加的行数",
+      "linesAddedDesc": "按添加的代码行数排序",
+      "filesChanged": "更改的文件数",
+      "filesChangedDesc": "按修改的文件数排序"
+    },
+    "stats": {
+      "title": "代码统计",
+      "linesAdded": "添加的行数",
+      "linesRemoved": "删除的行数",
+      "filesChanged": "更改的文件数",
+      "netChange": "净变化",
+      "totalEntries": "总条目数"
+    },
+    "files": {
+      "modified": "修改的文件",
+      "created": "创建的文件"
+    },
+    "artifacts": {
+      "title": "工件",
+      "apiEndpoints": "API端点",
+      "components": "组件",
+      "functions": "函数",
+      "classes": "类",
+      "integrations": "集成",
+      "details": {
+        "request": "请求:",
+        "response": "响应:",
+        "props": "属性:",
+        "exports": "导出:",
+        "exported": "已导出",
+        "private": "私有",
+        "methods": "方法:",
+        "component": "组件:",
+        "endpoint": "端点:",
+        "flow": "流程:"
+      }
+    },
+    "empty": {
+      "selectSpec": "选择一个规范来查看实现日志",
+      "noResults": "没有日志与您的搜索过滤器匹配",
+      "noLogs": "该规范尚无实现日志"
+    },
+    "loading": "加载日志中...",
+    "taskBadge": "任务"
   },
   "volumeControl": {
     "mute": "静音通知",

@@ -8,7 +8,8 @@
     "specs": "Specs",
     "tasks": "Tasks",
     "approvals": "Approvals",
-    "settings": "Settings"
+    "settings": "Settings",
+    "logs": "Implementation Logs"
   },
   "connectionStatus": {
     "connected": "Connected",
@@ -389,9 +390,71 @@
     }
   },
   "logsPage": {
+    "header": {
+      "title": "Implementation Logs"
+    },
     "search": {
       "placeholder": "Search logs..."
-    }
+    },
+    "specDropdown": {
+      "selectPlaceholder": "Select Specification",
+      "searchPlaceholder": "Search specs...",
+      "noSpecsFound": "No specs found"
+    },
+    "filter": {
+      "label": "Filter by Task",
+      "all": "All",
+      "taskPrefix": "Task"
+    },
+    "sort": {
+      "timestamp": "Date/Time",
+      "timestampDesc": "Sort by log timestamp",
+      "taskId": "Task ID",
+      "taskIdDesc": "Sort by task identifier",
+      "linesAdded": "Lines Added",
+      "linesAddedDesc": "Sort by lines of code added",
+      "filesChanged": "Files Changed",
+      "filesChangedDesc": "Sort by number of files modified"
+    },
+    "stats": {
+      "title": "Code Statistics",
+      "linesAdded": "Lines Added",
+      "linesRemoved": "Lines Removed",
+      "filesChanged": "Files Changed",
+      "netChange": "Net Change",
+      "totalEntries": "Total Entries"
+    },
+    "files": {
+      "modified": "Files Modified",
+      "created": "Files Created"
+    },
+    "artifacts": {
+      "title": "Artifacts",
+      "apiEndpoints": "API Endpoints",
+      "components": "Components",
+      "functions": "Functions",
+      "classes": "Classes",
+      "integrations": "Integrations",
+      "details": {
+        "request": "Request:",
+        "response": "Response:",
+        "props": "Props:",
+        "exports": "Exports:",
+        "exported": "Exported",
+        "private": "Private",
+        "methods": "Methods:",
+        "component": "Component:",
+        "endpoint": "Endpoint:",
+        "flow": "Flow:"
+      }
+    },
+    "empty": {
+      "selectSpec": "Select a specification to view implementation logs",
+      "noResults": "No logs match your search filters",
+      "noLogs": "No implementation logs yet for this specification"
+    },
+    "loading": "Loading logs...",
+    "taskBadge": "Task"
   },
   "volumeControl": {
     "mute": "Mute notifications",

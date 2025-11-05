@@ -8,7 +8,8 @@
     "specs": "Spezifikationen",
     "tasks": "Aufgaben",
     "approvals": "Genehmigungen",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "logs": "Implementierungsprotokolle"
   },
   "connectionStatus": {
     "connected": "Verbunden",
@@ -389,9 +390,71 @@
     }
   },
   "logsPage": {
+    "header": {
+      "title": "Implementierungsprotokolle"
+    },
     "search": {
-      "placeholder": "Logs durchsuchen..."
-    }
+      "placeholder": "Protokolle durchsuchen..."
+    },
+    "specDropdown": {
+      "selectPlaceholder": "Spezifikation auswählen",
+      "searchPlaceholder": "Spezifikationen durchsuchen...",
+      "noSpecsFound": "Keine Spezifikationen gefunden"
+    },
+    "filter": {
+      "label": "Nach Aufgabe filtern",
+      "all": "Alle",
+      "taskPrefix": "Aufgabe"
+    },
+    "sort": {
+      "timestamp": "Datum/Uhrzeit",
+      "timestampDesc": "Nach Log-Zeitstempel sortieren",
+      "taskId": "Aufgaben-ID",
+      "taskIdDesc": "Nach Aufgaben-ID sortieren",
+      "linesAdded": "Hinzugefügte Zeilen",
+      "linesAddedDesc": "Nach hinzugefügten Codezeilen sortieren",
+      "filesChanged": "Geänderte Dateien",
+      "filesChangedDesc": "Nach Anzahl der geänderten Dateien sortieren"
+    },
+    "stats": {
+      "title": "Code-Statistiken",
+      "linesAdded": "Hinzugefügte Zeilen",
+      "linesRemoved": "Entfernte Zeilen",
+      "filesChanged": "Geänderte Dateien",
+      "netChange": "Netto-Änderung",
+      "totalEntries": "Gesamteinträge"
+    },
+    "files": {
+      "modified": "Geänderte Dateien",
+      "created": "Erstellte Dateien"
+    },
+    "artifacts": {
+      "title": "Artefakte",
+      "apiEndpoints": "API-Endpunkte",
+      "components": "Komponenten",
+      "functions": "Funktionen",
+      "classes": "Klassen",
+      "integrations": "Integrationen",
+      "details": {
+        "request": "Anfrage:",
+        "response": "Antwort:",
+        "props": "Props:",
+        "exports": "Exporte:",
+        "exported": "Exportiert",
+        "private": "Privat",
+        "methods": "Methoden:",
+        "component": "Komponente:",
+        "endpoint": "Endpunkt:",
+        "flow": "Fluss:"
+      }
+    },
+    "empty": {
+      "selectSpec": "Wählen Sie eine Spezifikation aus, um Implementierungsprotokolle anzuzeigen",
+      "noResults": "Keine Protokolle stimmen mit Ihren Suchfiltern überein",
+      "noLogs": "Noch keine Implementierungsprotokolle für diese Spezifikation"
+    },
+    "loading": "Protokolle werden geladen...",
+    "taskBadge": "Aufgabe"
   },
   "volumeControl": {
     "mute": "Benachrichtigungen stumm schalten",
