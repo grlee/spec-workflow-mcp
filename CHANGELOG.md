@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2025-11-06
+
+### Fixed
+- Fixed a Critical bug where approval records were not being saved correctly on approval and blocking the full process.
+- Fixed a bug with dropdowns in the dashboard causing unecassary horizontal scrollbars.
+- Fixed a bug where diff viewer for approvals was not working.
+
 ## [2.0.0] - 2025-11-03
 
 ### Added
