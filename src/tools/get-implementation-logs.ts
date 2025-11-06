@@ -13,8 +13,11 @@ export const getImplementationLogsTool: Tool = {
 - Find utility functions and classes (avoid reimplementing logic)
 - Understand integration patterns (ensure consistency)
 
-🔍 REQUIRED: You MUST provide at least ONE filter parameter (taskId, search, or artifactType) OR set all=true.
+🔍 REQUIRED: You MUST provide at least ONE filter parameter (taskId, keyword, or artifactType) OR set all=true.
 NEVER call this tool with only projectPath and specName - this discourages efficient queries.
+
+🔄 BEST PRACTICE: Use this tool MULTIPLE TIMES (2-3 calls) with different single keywords to build comprehensive understanding.
+If initial results don't contain what you need, call again with a different keyword to explore other aspects.
 
 Returns structured artifacts including:
 - API endpoints with methods, paths, request/response formats
@@ -24,11 +27,29 @@ Returns structured artifacts including:
 
 # Recommended Approach (Use These)
 
-✅ Search for specific code pattern:
+✅ Search with single keyword (preferred - call 2-3 times):
+\`\`\`
+// First call - discover APIs
+projectPath: "/path/to/project"
+specName: "my-feature"
+keyword: "api"
+
+// Second call - find components
+projectPath: "/path/to/project"
+specName: "my-feature"
+keyword: "component"
+
+// Third call - check authentication
+projectPath: "/path/to/project"
+specName: "my-feature"
+keyword: "authentication"
+\`\`\`
+
+✅ Multiple keywords (uses AND logic - must match ALL):
 \`\`\`
 projectPath: "/path/to/project"
 specName: "my-feature"
-search: "authentication"
+keyword: "api endpoint"  // Matches items containing BOTH "api" AND "endpoint"
 \`\`\`
 
 ✅ Find all API endpoints:
@@ -69,9 +90,9 @@ all: true  // Only use if absolutely necessary - strongly discouraged
         type: 'string',
         description: 'Optional: Filter by specific task ID (e.g., "2.3")'
       },
-      search: {
+      keyword: {
         type: 'string',
-        description: 'Optional: Search term to filter logs (searches summary, files, artifact data)'
+        description: 'Optional: Keyword(s) to filter logs. Uses basic keyword matching (NOT semantic search). Space-separated keywords use AND logic (e.g., "api endpoint" matches only items containing BOTH words). Searches across summary, files, and all artifact data. TIP: Use single keywords and call this tool 2-3 times with different keywords to build comprehensive understanding.'
       },
       artifactType: {
         type: 'string',
@@ -95,23 +116,25 @@ export async function getImplementationLogsHandler(
     projectPath,
     specName,
     taskId,
-    search,
+    keyword,
     artifactType,
     all = false
   } = args;
 
   try {
     // Validation: Require filters when all=false (default)
-    if (!all && !taskId && !search && !artifactType) {
+    if (!all && !taskId && !keyword && !artifactType) {
       return {
         success: false,
         message: `❌ Filter Required: You must provide at least ONE filter parameter:
 - taskId: Filter by specific task (e.g., "2.3")
-- search: Search for specific patterns (e.g., "authentication", "api", "component name")
+- keyword: Single keyword for focused search (e.g., "api", "authentication", "component")
+  - Space-separated for AND logic (e.g., "api endpoint" = must match BOTH words)
+  - TIP: Call this tool 2-3 times with different keywords to discover comprehensively
 - artifactType: Filter by type (e.g., "apiEndpoints", "components", "functions", "classes", "integrations")
 
 Retrieving all logs without filters fills your context with irrelevant information.
-Use targeted searches to find exactly what you need.
+Use targeted keyword searches to find exactly what you need.
 
 If you absolutely need all logs, set all: true (strongly discouraged).`,
         projectContext: {
@@ -134,10 +157,10 @@ If you absolutely need all logs, set all: true (strongly discouraged).`,
       // User explicitly requested all logs
       logs = await logManager.getAllLogs();
       filterUsed = 'NONE (all logs retrieved)';
-    } else if (search) {
+    } else if (keyword) {
       // Use search method (more efficient than loading all)
-      logs = await logManager.searchLogs(search);
-      filterUsed = `search: "${search}"`;
+      logs = await logManager.searchLogs(keyword);
+      filterUsed = `keyword: "${keyword}"`;
     } else if (taskId) {
       // Filter by task
       const allLogs = await logManager.getAllLogs();
@@ -179,7 +202,7 @@ If you absolutely need all logs, set all: true (strongly discouraged).`,
         allLogsRetrieved: all,
         filters: {
           taskId: taskId || null,
-          search: search || null,
+          keyword: keyword || null,
           artifactType: artifactType || null,
           all
         },

@@ -108,80 +108,87 @@ export class ImplementationLogManager {
 
   /**
    * Search logs by summary, task ID, files, and artifacts
+   * Supports space-separated keywords with AND logic (all keywords must match)
    */
   async searchLogs(query: string): Promise<ImplementationLogEntry[]> {
     const log = await this.loadLog();
-    const lowerQuery = query.toLowerCase();
+
+    // Split query into keywords (space-separated) and convert to lowercase
+    const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 0);
 
     return log.entries.filter(e => {
-      // Search in summary, taskId, and files
-      if (
-        e.summary.toLowerCase().includes(lowerQuery) ||
-        e.taskId.toLowerCase().includes(lowerQuery) ||
-        e.filesModified.some(f => f.toLowerCase().includes(lowerQuery)) ||
-        e.filesCreated.some(f => f.toLowerCase().includes(lowerQuery))
-      ) {
-        return true;
-      }
-
-      // Search in artifacts
-      if (e.artifacts) {
-        // Search API endpoints
-        if (e.artifacts.apiEndpoints?.some(api =>
-          api.method.toLowerCase().includes(lowerQuery) ||
-          api.path.toLowerCase().includes(lowerQuery) ||
-          api.purpose.toLowerCase().includes(lowerQuery) ||
-          api.location.toLowerCase().includes(lowerQuery) ||
-          (api.requestFormat && api.requestFormat.toLowerCase().includes(lowerQuery)) ||
-          (api.responseFormat && api.responseFormat.toLowerCase().includes(lowerQuery))
-        )) {
+      // For each keyword, check if it appears anywhere in this entry
+      // ALL keywords must match (AND logic)
+      return keywords.every(keyword => {
+        // Search in summary, taskId, and files
+        if (
+          e.summary.toLowerCase().includes(keyword) ||
+          e.taskId.toLowerCase().includes(keyword) ||
+          e.filesModified.some(f => f.toLowerCase().includes(keyword)) ||
+          e.filesCreated.some(f => f.toLowerCase().includes(keyword))
+        ) {
           return true;
         }
 
-        // Search components
-        if (e.artifacts.components?.some(comp =>
-          comp.name.toLowerCase().includes(lowerQuery) ||
-          comp.type.toLowerCase().includes(lowerQuery) ||
-          comp.purpose.toLowerCase().includes(lowerQuery) ||
-          comp.location.toLowerCase().includes(lowerQuery) ||
-          (comp.props && comp.props.toLowerCase().includes(lowerQuery)) ||
-          (comp.exports?.some(exp => exp.toLowerCase().includes(lowerQuery)))
-        )) {
-          return true;
+        // Search in artifacts
+        if (e.artifacts) {
+          // Search API endpoints
+          if (e.artifacts.apiEndpoints?.some(api =>
+            api.method.toLowerCase().includes(keyword) ||
+            api.path.toLowerCase().includes(keyword) ||
+            api.purpose.toLowerCase().includes(keyword) ||
+            api.location.toLowerCase().includes(keyword) ||
+            (api.requestFormat && api.requestFormat.toLowerCase().includes(keyword)) ||
+            (api.responseFormat && api.responseFormat.toLowerCase().includes(keyword))
+          )) {
+            return true;
+          }
+
+          // Search components
+          if (e.artifacts.components?.some(comp =>
+            comp.name.toLowerCase().includes(keyword) ||
+            comp.type.toLowerCase().includes(keyword) ||
+            comp.purpose.toLowerCase().includes(keyword) ||
+            comp.location.toLowerCase().includes(keyword) ||
+            (comp.props && comp.props.toLowerCase().includes(keyword)) ||
+            (comp.exports?.some(exp => exp.toLowerCase().includes(keyword)))
+          )) {
+            return true;
+          }
+
+          // Search functions
+          if (e.artifacts.functions?.some(func =>
+            func.name.toLowerCase().includes(keyword) ||
+            func.purpose.toLowerCase().includes(keyword) ||
+            func.location.toLowerCase().includes(keyword) ||
+            (func.signature && func.signature.toLowerCase().includes(keyword))
+          )) {
+            return true;
+          }
+
+          // Search classes
+          if (e.artifacts.classes?.some(cls =>
+            cls.name.toLowerCase().includes(keyword) ||
+            cls.purpose.toLowerCase().includes(keyword) ||
+            cls.location.toLowerCase().includes(keyword) ||
+            (cls.methods?.some(method => method.toLowerCase().includes(keyword)))
+          )) {
+            return true;
+          }
+
+          // Search integrations
+          if (e.artifacts.integrations?.some(intg =>
+            intg.description.toLowerCase().includes(keyword) ||
+            intg.frontendComponent.toLowerCase().includes(keyword) ||
+            intg.backendEndpoint.toLowerCase().includes(keyword) ||
+            intg.dataFlow.toLowerCase().includes(keyword)
+          )) {
+            return true;
+          }
         }
 
-        // Search functions
-        if (e.artifacts.functions?.some(func =>
-          func.name.toLowerCase().includes(lowerQuery) ||
-          func.purpose.toLowerCase().includes(lowerQuery) ||
-          func.location.toLowerCase().includes(lowerQuery) ||
-          (func.signature && func.signature.toLowerCase().includes(lowerQuery))
-        )) {
-          return true;
-        }
-
-        // Search classes
-        if (e.artifacts.classes?.some(cls =>
-          cls.name.toLowerCase().includes(lowerQuery) ||
-          cls.purpose.toLowerCase().includes(lowerQuery) ||
-          cls.location.toLowerCase().includes(lowerQuery) ||
-          (cls.methods?.some(method => method.toLowerCase().includes(lowerQuery)))
-        )) {
-          return true;
-        }
-
-        // Search integrations
-        if (e.artifacts.integrations?.some(intg =>
-          intg.description.toLowerCase().includes(lowerQuery) ||
-          intg.frontendComponent.toLowerCase().includes(lowerQuery) ||
-          intg.backendEndpoint.toLowerCase().includes(lowerQuery) ||
-          intg.dataFlow.toLowerCase().includes(lowerQuery)
-        )) {
-          return true;
-        }
-      }
-
-      return false;
+        return false;
+      });
     });
   }
 

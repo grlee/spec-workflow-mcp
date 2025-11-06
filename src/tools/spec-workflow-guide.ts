@@ -216,12 +216,15 @@ flowchart TD
 3. For each task:
    - Edit tasks.md: Change \`[ ]\` to \`[-]\` for the task you're starting
    - **CRITICAL: BEFORE implementing, use get-implementation-logs tool with REQUIRED filters**:
-     - NEVER call without filters - always provide search term, taskId, or artifactType
-     - Recommended filters:
-       - \`search: "api"\` or \`artifactType: "apiEndpoints"\` - Find existing endpoints
-       - \`search: "component"\` or \`artifactType: "components"\` - Find UI components
+     - NEVER call without filters - always provide keyword, taskId, or artifactType
+     - **Best practice: Call this tool 2-3 times with different single keywords to discover comprehensively**
+     - Recommended approach:
+       - \`keyword: "api"\` or \`artifactType: "apiEndpoints"\` - Find existing endpoints
+       - \`keyword: "component"\` or \`artifactType: "components"\` - Find UI components
        - \`artifactType: "functions"\` or \`artifactType: "classes"\` - Find utility code
-       - \`search: "<name>"\` - Search for specific patterns or names
+       - \`keyword: "<specific-term>"\` - Search for specific patterns or names
+       - Multiple keywords: \`keyword: "api endpoint"\` uses AND logic (must match BOTH)
+     - If first search doesn't return what you need, call again with different keyword
      - This prevents: duplicate endpoints, reimplemented components, broken integrations
      - Reuse existing code that already solves part of the task
    - **Read the _Prompt field** for guidance on role, approach, and success criteria

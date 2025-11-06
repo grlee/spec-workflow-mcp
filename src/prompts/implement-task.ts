@@ -63,11 +63,21 @@ ${context.dashboardUrl ? `- Dashboard: ${context.dashboardUrl}` : ''}
 
 4. **Discover Existing Implementations (CRITICAL):**
    - BEFORE writing any code, use get-implementation-logs tool to query existing artifacts
-   - REQUIRED: You MUST provide a filter (search term, taskId, or artifactType) - never call without filters
-   - Examples of effective filters:
-     - search: "api" or search: "endpoint" - Find existing API endpoints
-     - search: "component" or search: "TodoList" - Find UI components
-     - search: "authentication" - Find integration patterns
+   - REQUIRED: You MUST provide a filter (keyword, taskId, or artifactType) - never call without filters
+   - **Best practice: Call this tool 2-3 times with different single keywords to build comprehensive understanding**
+   - Iterative discovery pattern (recommended):
+     - First call - keyword: "api" - Discover API endpoints
+     - Second call - keyword: "component" - Find UI components
+     - Third call - keyword: "authentication" (or other relevant term) - Check integration patterns
+   - Single keyword examples:
+     - keyword: "api" - Find existing API endpoints
+     - keyword: "endpoint" - Alternative search for APIs
+     - keyword: "component" - Find UI components
+     - keyword: "TodoList" - Search for specific component
+     - keyword: "authentication" - Find integration patterns
+   - Multiple keywords (AND logic):
+     - keyword: "api endpoint" - Must match BOTH "api" AND "endpoint"
+   - Artifact type filters:
      - artifactType: "apiEndpoints" - Get all API endpoints
      - artifactType: "components" - Get all components
    - Why this matters:
@@ -76,6 +86,7 @@ ${context.dashboardUrl ? `- Dashboard: ${context.dashboardUrl}` : ''}
      - ❌ Don't ignore established patterns - understand how middleware/integrations were set up
      - ✅ Reuse existing code - leverage already-implemented functions and components
      - ✅ Follow patterns - maintain consistency with established architecture
+   - If initial search doesn't return expected results, call again with a different keyword
    - Document any existing related implementations before proceeding
    - If you find existing code that does what the task asks, leverage it instead of recreating
 
