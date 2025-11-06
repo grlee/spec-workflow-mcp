@@ -1,7 +1,5 @@
 // Common types for the spec workflow MCP server
 
-import { SessionManager } from './core/session-manager.js';
-
 // Automation job types
 export interface AutomationJob {
   id: string;
@@ -43,7 +41,6 @@ export interface JobExecutionLog {
 export interface ToolContext {
   projectPath: string;
   dashboardUrl?: string; // Optional for backwards compatibility
-  sessionManager?: SessionManager; // Optional for accessing session data
   lang?: string; // Language code for i18n (e.g., 'en', 'ja')
 }
 

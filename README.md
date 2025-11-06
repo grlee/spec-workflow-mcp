@@ -59,10 +59,14 @@ Add to your MCP configuration (see client-specific setup below):
 ### Step 2: Choose your interface
 
 **Option A: Web Dashboard** (Required for CLI users)
-Start the dashboard seperately:
+Start the dashboard (runs on port 5000 by default):
 ```bash
-npx -y @pimzino/spec-workflow-mcp@latest --dashboard --port 3000
+npx -y @pimzino/spec-workflow-mcp@latest --dashboard
 ```
+
+The dashboard will be accessible at: http://localhost:5000
+
+> **Note:** Only one dashboard instance is needed. All your projects will connect to the same dashboard.
 
 **Option B: VSCode Extension** (Recommended for VSCode users)
 
@@ -130,17 +134,8 @@ Add to `claude_desktop_config.json`:
 }
 ```
 
-Or with auto-started dashboard:
-```json
-{
-  "mcpServers": {
-    "spec-workflow": {
-      "command": "npx",
-      "args": ["-y", "@pimzino/spec-workflow-mcp@latest", "/path/to/your/project", "--AutoStartDashboard"]
-    }
-  }
-}
-```
+> **Important:** Run the dashboard separately with `--dashboard` before starting the MCP server.
+
 </details>
 
 <details>
