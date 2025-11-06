@@ -18,11 +18,6 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-export interface DashboardStartOptions {
-  autoStart: boolean;
-  port?: number;
-}
-
 export class SpecWorkflowMCPServer {
   private server: Server;
   private projectPath!: string;
@@ -60,7 +55,7 @@ export class SpecWorkflowMCPServer {
     this.projectRegistry = new ProjectRegistry();
   }
 
-  async initialize(projectPath: string, dashboardOptions?: DashboardStartOptions, lang?: string) {
+  async initialize(projectPath: string, lang?: string) {
     this.projectPath = projectPath;
     this.lang = lang;
 

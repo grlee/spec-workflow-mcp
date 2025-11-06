@@ -362,24 +362,28 @@ project-root/
 
 ## 🌐 Dashboard Architecture
 
-### Backend (`src/dashboard/server.ts`)
+### Backend (`src/dashboard/multi-server.ts`)
 
-Fastify-based server with WebSocket support:
+Fastify-based multi-project server with WebSocket support:
 
 ```typescript
-export class DashboardServer {
+export class MultiProjectDashboardServer {
   private app: FastifyInstance;
-  private watcher: SpecWatcher;
-  private approvalStorage: ApprovalStorage;
-  private clients: Set<WebSocket>;
+  private projectManager: ProjectManager;
+  private jobScheduler: JobScheduler;
+  private clients: Map<string, Set<WebSocket>>;
 }
 ```
 
 **Features:**
+- **Multi-Project Support**: Manage multiple projects simultaneously
+- **Project Selection**: Switch between projects in the UI
 - **Static File Serving**: Frontend assets
-- **WebSocket**: Real-time updates
-- **REST API**: CRUD operations
-- **File Watching**: Auto-refresh on changes
+- **WebSocket**: Real-time, project-scoped updates
+- **REST API**: Project-scoped CRUD operations
+- **File Watching**: Per-project auto-refresh on changes
+- **Job Scheduling**: Automated task execution
+- **Session Management**: Single dashboard instance enforcement
 
 ### Frontend (`src/dashboard_frontend/`)
 

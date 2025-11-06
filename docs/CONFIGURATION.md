@@ -112,9 +112,6 @@ projectDir = "/path/to/your/project"
 # Dashboard port (1024-65535)
 port = 3456
 
-# Auto-start dashboard with MCP server
-autoStartDashboard = true
-
 # Run dashboard-only mode
 dashboardOnly = false
 
@@ -146,9 +143,10 @@ debounceMs = 300
 |--------|------|---------|-------------|
 | `projectDir` | string | Current directory | Project directory path |
 | `port` | number | Ephemeral | Dashboard port (1024-65535) |
-| `autoStartDashboard` | boolean | false | Auto-start dashboard with MCP |
 | `dashboardOnly` | boolean | false | Run dashboard without MCP server |
 | `lang` | string | "en" | Interface language |
+
+> **Note**: The `autoStartDashboard` option was removed in v2.0.0. The dashboard now uses a unified multi-project mode accessible via `--dashboard` flag.
 
 #### Language Options
 
@@ -176,7 +174,6 @@ cp .spec-workflow/config.example.toml .spec-workflow/config.toml
 # My project configuration
 projectDir = "/Users/myname/projects/myapp"
 port = 3000
-autoStartDashboard = true
 lang = "en"
 ```
 
@@ -203,7 +200,6 @@ Configuration values are applied in this order (highest to lowest priority):
 ```toml
 # config.toml
 port = 3000
-autoStartDashboard = true
 ```
 
 ```bash
@@ -220,7 +216,6 @@ npx -y @pimzino/spec-workflow-mcp@latest --config config.toml --port 4000
 # dev-config.toml
 projectDir = "./src"
 port = 3000
-autoStartDashboard = true
 lang = "en"
 
 [advanced]
@@ -239,7 +234,6 @@ npx -y @pimzino/spec-workflow-mcp@latest --config dev-config.toml
 # prod-config.toml
 projectDir = "/var/app"
 port = 8080
-autoStartDashboard = false
 lang = "en"
 
 [advanced]

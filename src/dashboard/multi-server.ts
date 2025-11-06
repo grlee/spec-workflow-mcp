@@ -442,7 +442,7 @@ export class MultiProjectDashboardServer {
       if (!project) {
         return reply.code(404).send({ error: 'Project not found' });
       }
-      return await project.approvalStorage.getAllApprovals();
+      return await project.approvalStorage.getAllPendingApprovals();
     });
 
     // Get approval content

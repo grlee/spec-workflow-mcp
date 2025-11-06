@@ -253,7 +253,7 @@ async function main() {
 
       const server = new SpecWorkflowMCPServer();
 
-      await server.initialize(projectPath, undefined, lang);
+      await server.initialize(projectPath, lang);
 
       // Handle graceful shutdown
       process.on('SIGINT', async () => {
