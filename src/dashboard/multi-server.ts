@@ -522,6 +522,97 @@ export class MultiProjectDashboardServer {
       }
     });
 
+    // Get all snapshots for an approval
+    this.app.get('/api/projects/:projectId/approvals/:id/snapshots', async (request, reply) => {
+      const { projectId, id } = request.params as { projectId: string; id: string };
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+      try {
+        const snapshots = await project.approvalStorage.getSnapshots(id);
+        return snapshots;
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to get snapshots: ${error.message}` });
+      }
+    });
+
+    // Get specific snapshot version for an approval
+    this.app.get('/api/projects/:projectId/approvals/:id/snapshots/:version', async (request, reply) => {
+      const { projectId, id, version } = request.params as { projectId: string; id: string; version: string };
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+      try {
+        const versionNum = parseInt(version, 10);
+        if (isNaN(versionNum)) {
+          return reply.code(400).send({ error: 'Invalid version number' });
+        }
+
+        const snapshot = await project.approvalStorage.getSnapshot(id, versionNum);
+        if (!snapshot) {
+          return reply.code(404).send({ error: `Snapshot version ${version} not found` });
+        }
+
+        return snapshot;
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to get snapshot: ${error.message}` });
+      }
+    });
+
+    // Get diff between two versions or between version and current
+    this.app.get('/api/projects/:projectId/approvals/:id/diff', async (request, reply) => {
+      const { projectId, id } = request.params as { projectId: string; id: string };
+      const { from, to } = request.query as { from?: string; to?: string };
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+
+      if (!from) {
+        return reply.code(400).send({ error: 'from parameter is required' });
+      }
+
+      try {
+        const fromVersion = parseInt(from, 10);
+        if (isNaN(fromVersion)) {
+          return reply.code(400).send({ error: 'Invalid from version number' });
+        }
+
+        let toVersion: number | 'current';
+        if (to === 'current' || to === undefined) {
+          toVersion = 'current';
+        } else {
+          const toVersionNum = parseInt(to, 10);
+          if (isNaN(toVersionNum)) {
+            return reply.code(400).send({ error: 'Invalid to version number' });
+          }
+          toVersion = toVersionNum;
+        }
+
+        const diff = await project.approvalStorage.compareSnapshots(id, fromVersion, toVersion);
+        return diff;
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to compute diff: ${error.message}` });
+      }
+    });
+
+    // Manual snapshot capture
+    this.app.post('/api/projects/:projectId/approvals/:id/snapshot', async (request, reply) => {
+      const { projectId, id } = request.params as { projectId: string; id: string };
+      const project = this.projectManager.getProject(projectId);
+      if (!project) {
+        return reply.code(404).send({ error: 'Project not found' });
+      }
+      try {
+        await project.approvalStorage.captureSnapshot(id, 'manual');
+        return { success: true, message: 'Snapshot captured successfully' };
+      } catch (error: any) {
+        return reply.code(500).send({ error: `Failed to capture snapshot: ${error.message}` });
+      }
+    });
+
     // Get steering document
     this.app.get('/api/projects/:projectId/steering/:name', async (request, reply) => {
       const { projectId, name } = request.params as { projectId: string; name: string };
