@@ -506,8 +506,16 @@ export class MultiProjectDashboardServer {
         return reply.code(400).send({ error: 'Invalid action' });
       }
 
+      // Convert action name to status value
+      const actionToStatus: Record<string, 'approved' | 'rejected' | 'needs-revision'> = {
+        'approve': 'approved',
+        'reject': 'rejected',
+        'needs-revision': 'needs-revision'
+      };
+      const status = actionToStatus[action];
+
       try {
-        await project.approvalStorage.updateApproval(id, action as any, response, annotations, comments);
+        await project.approvalStorage.updateApproval(id, status, response, annotations, comments);
         return { success: true };
       } catch (error: any) {
         return reply.code(404).send({ error: error.message });
