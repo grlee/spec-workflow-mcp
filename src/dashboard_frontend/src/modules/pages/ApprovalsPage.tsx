@@ -586,12 +586,15 @@ function Content() {
     return Array.from(cats);
   }, [approvals]);
 
-  // Filter approvals based on selected category
+  // Filter approvals based on selected category and status (only show pending)
   const filteredApprovals = useMemo(() => {
-    if (filterCategory === 'all') {
-      return approvals;
+    let filtered = approvals.filter(a => a.status === 'pending');
+    
+    if (filterCategory !== 'all') {
+      filtered = filtered.filter(a => (a as any).categoryName === filterCategory);
     }
-    return approvals.filter(a => (a as any).categoryName === filterCategory);
+    
+    return filtered;
   }, [approvals, filterCategory]);
 
   // Calculate pending count for header display

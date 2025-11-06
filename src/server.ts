@@ -11,9 +11,9 @@ import {
 import { registerTools, handleToolCall } from './tools/index.js';
 import { registerPrompts, handlePromptList, handlePromptGet } from './prompts/index.js';
 import { validateProjectPath } from './core/path-utils.js';
-import { SessionManager } from './core/session-manager.js';
 import { WorkspaceInitializer } from './core/workspace-initializer.js';
 import { ProjectRegistry } from './core/project-registry.js';
+import { DashboardSessionManager } from './core/dashboard-session.js';
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -27,7 +27,6 @@ export class SpecWorkflowMCPServer {
   private server: Server;
   private projectPath!: string;
   private projectRegistry: ProjectRegistry;
-  private sessionManager?: SessionManager;
   private lang?: string;
 
   constructor() {
@@ -76,32 +75,26 @@ export class SpecWorkflowMCPServer {
       const workspaceInitializer = new WorkspaceInitializer(this.projectPath, packageJson.version);
       await workspaceInitializer.initializeWorkspace();
 
-      // Initialize session manager
-      this.sessionManager = new SessionManager(this.projectPath);
-
-      // Deprecation warning for --AutoStartDashboard
-      if (dashboardOptions?.autoStart) {
-        console.error('');
-        console.error('⚠️  DEPRECATION WARNING:');
-        console.error('   --AutoStartDashboard is deprecated in the new multi-project architecture.');
-        console.error('   Please run a single dashboard server separately:');
-        console.error('   ');
-        console.error('   spec-workflow-mcp --dashboard --port 5000');
-        console.error('   ');
-        console.error('   Then start MCP servers without the dashboard flag.');
-        console.error('   Projects will automatically appear in the unified dashboard.');
-        console.error('');
-      }
-
       // Register this project in the global registry
       const projectId = await this.projectRegistry.registerProject(this.projectPath, process.pid);
       console.error(`Project registered: ${projectId}`);
 
+      // Try to get the dashboard URL from session manager
+      let dashboardUrl: string | undefined = undefined;
+      try {
+        const sessionManager = new DashboardSessionManager();
+        const dashboardSession = await sessionManager.getDashboardSession();
+        if (dashboardSession) {
+          dashboardUrl = dashboardSession.url;
+        }
+      } catch (error) {
+        // Dashboard not running, continue without it
+      }
+
       // Create context for tools
       const context = {
         projectPath: this.projectPath,
-        dashboardUrl: undefined, // No per-project dashboard URL
-        sessionManager: this.sessionManager,
+        dashboardUrl: dashboardUrl,
         lang: this.lang
       };
 

@@ -15,23 +15,18 @@ Call this tool FIRST when users request spec creation, feature development, or m
 };
 
 export async function specWorkflowGuideHandler(args: any, context: ToolContext): Promise<ToolResponse> {
-  // Get dashboard URL from context or session
-  let dashboardUrl = context.dashboardUrl;
-  if (!dashboardUrl && context.sessionManager) {
-    dashboardUrl = await context.sessionManager.getDashboardUrl();
-  }
-
-  const dashboardMessage = dashboardUrl ?
-    `Monitor progress on dashboard: ${dashboardUrl}` :
-    'Please start the dashboard or use VS Code extension "Spec Workflow MCP"';
+  // Dashboard URL is populated from registry in server.ts
+  const dashboardMessage = context.dashboardUrl ?
+    `Monitor progress on dashboard: ${context.dashboardUrl}` :
+    'Please start the dashboard with: spec-workflow-mcp --dashboard';
 
   return {
     success: true,
     message: 'Complete spec workflow guide loaded - follow this workflow exactly',
     data: {
       guide: getSpecWorkflowGuide(),
-      dashboardUrl: dashboardUrl,
-      dashboardAvailable: !!dashboardUrl
+      dashboardUrl: context.dashboardUrl,
+      dashboardAvailable: !!context.dashboardUrl
     },
     nextSteps: [
       'Follow sequence: Requirements → Design → Tasks → Implementation',

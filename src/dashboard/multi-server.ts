@@ -12,6 +12,7 @@ import { parseTasksFromMarkdown } from '../core/task-parser.js';
 import { ProjectManager } from './project-manager.js';
 import { JobScheduler } from './job-scheduler.js';
 import { ImplementationLogManager } from './implementation-log-manager.js';
+import { DashboardSessionManager } from '../core/dashboard-session.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -30,6 +31,7 @@ export class MultiProjectDashboardServer {
   private app: FastifyInstance;
   private projectManager: ProjectManager;
   private jobScheduler: JobScheduler;
+  private sessionManager: DashboardSessionManager;
   private options: MultiDashboardOptions;
   private actualPort: number = 0;
   private clients: Set<WebSocketConnection> = new Set();
@@ -39,6 +41,7 @@ export class MultiProjectDashboardServer {
     this.options = options;
     this.projectManager = new ProjectManager();
     this.jobScheduler = new JobScheduler(this.projectManager);
+    this.sessionManager = new DashboardSessionManager();
     this.app = fastify({ logger: false });
   }
 
@@ -177,25 +180,27 @@ export class MultiProjectDashboardServer {
     // Register API routes
     this.registerApiRoutes();
 
-    // Allocate port
-    if (this.options.port) {
-      await validateAndCheckPort(this.options.port);
-      this.actualPort = this.options.port;
-      console.error(`Using custom port: ${this.actualPort}`);
-    } else {
-      this.actualPort = await findAvailablePort();
-      console.error(`Using ephemeral port: ${this.actualPort}`);
+    // Validate and set port (always provided by caller)
+    if (!this.options.port) {
+      throw new Error('Dashboard port must be specified');
     }
+
+    await validateAndCheckPort(this.options.port);
+    this.actualPort = this.options.port;
 
     // Start server
     await this.app.listen({ port: this.actualPort, host: '0.0.0.0' });
 
+    // Register dashboard in the session manager
+    const dashboardUrl = `http://localhost:${this.actualPort}`;
+    await this.sessionManager.registerDashboard(dashboardUrl, this.actualPort, process.pid);
+
     // Open browser if requested
     if (this.options.autoOpen) {
-      await open(`http://localhost:${this.actualPort}`);
+      await open(dashboardUrl);
     }
 
-    return `http://localhost:${this.actualPort}`;
+    return dashboardUrl;
   }
 
   private setupProjectManagerEvents() {
@@ -1095,6 +1100,13 @@ export class MultiProjectDashboardServer {
 
     // Close the Fastify server
     await this.app.close();
+
+    // Unregister from the session manager
+    try {
+      await this.sessionManager.unregisterDashboard();
+    } catch (error) {
+      // Ignore cleanup errors
+    }
   }
 
   getUrl(): string {

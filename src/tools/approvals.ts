@@ -188,7 +188,7 @@ async function handleRequestApproval(
 
     return {
       success: true,
-      message: `Approval request created successfully. Please review in dashboard: ${context.dashboardUrl || 'Please start the dashboard or use VS Code extension "Spec Workflow MCP"'}`,
+      message: `Approval request created successfully. Please review in dashboard: ${context.dashboardUrl || 'Start with: spec-workflow-mcp --dashboard'}`,
       data: {
         approvalId,
         title: args.title,
@@ -198,10 +198,10 @@ async function handleRequestApproval(
         dashboardUrl: context.dashboardUrl
       },
       nextSteps: [
-        'BLOCKING - Dashboard or VS Code extension approval required',
+        'BLOCKING - Dashboard approval required',
         'VERBAL APPROVAL NOT ACCEPTED',
         'Do not proceed on verbal confirmation',
-        context.dashboardUrl ? `Use dashboard: ${context.dashboardUrl} or VS Code extension 'Spec Workflow MCP'` : 'VS Code extension Spec Workflow MCP',
+        context.dashboardUrl ? `Use dashboard: ${context.dashboardUrl}` : 'Start the dashboard with: spec-workflow-mcp --dashboard',
         `Poll status with: approvals action:"status" approvalId:"${approvalId}"`
       ],
       projectContext: {

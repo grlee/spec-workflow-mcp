@@ -276,7 +276,7 @@ function AppInner() {
                     Start MCP servers to see projects here.
                   </p>
                   <div className="text-sm text-gray-500 dark:text-gray-500">
-                    Run: <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">spec-workflow-mcp /path/to/project</code>
+                    Run: <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded">npx @pimzino/spec-workflow-mcp /path/to/project</code>
                   </div>
                 </div>
               </div>

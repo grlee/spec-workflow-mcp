@@ -212,8 +212,7 @@ The main server class that orchestrates all functionality:
 ```typescript
 export class SpecWorkflowMCPServer {
   private server: Server;
-  private dashboardServer?: DashboardServer;
-  private sessionManager?: SessionManager;
+  private projectRegistry: ProjectRegistry;
 }
 ```
 
@@ -271,7 +270,7 @@ Intelligent context management for efficient token usage:
 interface ToolContext {
   projectPath: string;
   dashboardUrl?: string;
-  sessionManager?: SessionManager;
+  lang?: string;
 }
 ```
 
@@ -348,7 +347,7 @@ project-root/
 │   │   └── structure.md         # Code organization
 │   ├── approvals/               # Approval workflow data
 │   │   └── spec-name/           # Per-spec approvals
-│   └── session.json             # Active dashboard session
+│   └── archive/                 # Archived specs
 └── [your project files]        # Existing project
 ```
 
@@ -407,9 +406,9 @@ src/
 ## 🔄 State Management
 
 ### Session State
-- **Server**: Tracks active dashboard URLs
-- **Client**: Maintains connection to specific dashboard instance
-- **Persistence**: `.spec-workflow/session.json`
+- **Server**: Dashboard registers in global project registry
+- **Client**: Maintains connection to dashboard WebSocket
+- **Persistence**: `~/.spec-workflow-mcp/activeProjects.json` (global registry)
 
 ### Approval State  
 - **Storage**: JSON files in `approvals/` directory
