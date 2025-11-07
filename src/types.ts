@@ -1,4 +1,5 @@
 // Common types for the spec workflow MCP server
+import { encode } from '@toon-format/toon';
 
 // Automation job types
 export interface AutomationJob {
@@ -181,7 +182,7 @@ export function toMCPResponse(response: ToolResponse, isError: boolean = false):
   return {
     content: [{
       type: "text",
-      text: JSON.stringify(response, null, 2)
+      text: encode(response)
     }],
     isError
   };

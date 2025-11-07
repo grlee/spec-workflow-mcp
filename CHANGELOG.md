@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.3]
+
+### Changed
+- Updated all MCP tool responses to respond in TOON format instead of JSON for token savings and effeciency. (More Info: https://github.com/toon-format/toon)
+
 ## [2.0.2] - 2025-11-06
 
 ### Changed
