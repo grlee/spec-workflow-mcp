@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { vscodeApi } from '../lib/vscode-api';
 import type { ImplementationLogEntry } from '../lib/vscode-api';
 import {
@@ -36,6 +37,7 @@ export function LogsPage({
   selectedSpec: string | null;
   onSpecChange: (spec: string) => void;
 }) {
+  const { t } = useTranslation();
   const [logsData, setLogsData] = useState<LogsData | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredEntries, setFilteredEntries] = useState<ImplementationLogEntry[]>([]);
@@ -185,9 +187,9 @@ export function LogsPage({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold">Implementation Logs</h2>
+        <h2 className="text-2xl font-bold">{t('logs.title')}</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Track all implementation changes and artifacts
+          {t('logs.subtitle')}
         </p>
       </div>
 
@@ -196,7 +198,7 @@ export function LogsPage({
         {/* Spec Selector */}
         <Select value={selectedSpec || ''} onValueChange={onSpecChange}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a spec..." />
+            <SelectValue placeholder={t('logs.selectSpec')} />
           </SelectTrigger>
           <SelectContent>
             {specs.map((spec) => (
@@ -209,7 +211,7 @@ export function LogsPage({
 
         {/* Search Input */}
         <Input
-          placeholder="Search logs..."
+          placeholder={t('logs.searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           disabled={!selectedSpec}
@@ -244,7 +246,7 @@ export function LogsPage({
                 : 'bg-muted text-muted-foreground hover:bg-muted-foreground/20'
             }`}
           >
-            Timestamp {sortBy === 'timestamp' && (sortOrder === 'asc' ? '↑' : '↓')}
+            {t('logs.sort.timestamp')} {sortBy === 'timestamp' && (sortOrder === 'asc' ? '↑' : '↓')}
           </button>
           <button
             onClick={() => toggleSort('taskId')}
@@ -254,7 +256,7 @@ export function LogsPage({
                 : 'bg-muted text-muted-foreground hover:bg-muted-foreground/20'
             }`}
           >
-            Task ID {sortBy === 'taskId' && (sortOrder === 'asc' ? '↑' : '↓')}
+            {t('logs.sort.taskId')} {sortBy === 'taskId' && (sortOrder === 'asc' ? '↑' : '↓')}
           </button>
           <button
             onClick={() => toggleSort('linesAdded')}
@@ -264,7 +266,7 @@ export function LogsPage({
                 : 'bg-muted text-muted-foreground hover:bg-muted-foreground/20'
             }`}
           >
-            Lines Added {sortBy === 'linesAdded' && (sortOrder === 'asc' ? '↑' : '↓')}
+            {t('logs.sort.linesAdded')} {sortBy === 'linesAdded' && (sortOrder === 'asc' ? '↑' : '↓')}
           </button>
           <button
             onClick={() => toggleSort('filesChanged')}
@@ -274,7 +276,7 @@ export function LogsPage({
                 : 'bg-muted text-muted-foreground hover:bg-muted-foreground/20'
             }`}
           >
-            Files Changed {sortBy === 'filesChanged' && (sortOrder === 'asc' ? '↑' : '↓')}
+            {t('logs.sort.filesChanged')} {sortBy === 'filesChanged' && (sortOrder === 'asc' ? '↑' : '↓')}
           </button>
         </div>
       </div>
@@ -286,7 +288,7 @@ export function LogsPage({
       {isLoading && (
         <Card>
           <CardContent className="p-8 text-center text-muted-foreground">
-            Loading logs...
+            {t('logs.loading')}
           </CardContent>
         </Card>
       )}
@@ -295,7 +297,7 @@ export function LogsPage({
       {!isLoading && !selectedSpec && (
         <Card>
           <CardContent className="p-8 text-center text-muted-foreground">
-            Select a spec to view implementation logs
+            {t('logs.selectSpecMessage')}
           </CardContent>
         </Card>
       )}
@@ -304,8 +306,8 @@ export function LogsPage({
         <Card>
           <CardContent className="p-8 text-center text-muted-foreground">
             {searchQuery
-              ? 'No logs match your search'
-              : 'No implementation logs found for this spec'}
+              ? t('logs.noSearchResults')
+              : t('logs.noLogs')}
           </CardContent>
         </Card>
       )}

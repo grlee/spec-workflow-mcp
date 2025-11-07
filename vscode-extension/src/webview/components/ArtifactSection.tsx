@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   GlobeAltIcon,
   CubeIcon,
@@ -30,14 +31,6 @@ const iconMap = {
   integrations: LinkIcon,
 };
 
-const labelMap = {
-  apiEndpoints: 'API Endpoints',
-  components: 'Components',
-  functions: 'Functions',
-  classes: 'Classes',
-  integrations: 'Integrations',
-};
-
 const colorMap = {
   apiEndpoints: 'text-blue-500',
   components: 'text-purple-500',
@@ -51,11 +44,20 @@ export function ArtifactSection({
   artifacts,
   className = '',
 }: ArtifactSectionProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!artifacts || artifacts.length === 0) {
     return null;
   }
+
+  const labelMap = {
+    apiEndpoints: t('logs.artifacts.apiEndpoints'),
+    components: t('logs.artifacts.components'),
+    functions: t('logs.artifacts.functions'),
+    classes: t('logs.artifacts.classes'),
+    integrations: t('logs.artifacts.integrations'),
+  };
 
   const Icon = iconMap[type];
   const label = labelMap[type];
@@ -84,18 +86,18 @@ export function ArtifactSection({
       {/* Expanded Content */}
       {isExpanded && (
         <div className="space-y-3 pl-7 mt-3 pt-3 border-t border-muted">
-          {type === 'apiEndpoints' && renderApiEndpoints(artifacts as ApiEndpoint[])}
-          {type === 'components' && renderComponents(artifacts as ComponentInfo[])}
-          {type === 'functions' && renderFunctions(artifacts as FunctionInfo[])}
-          {type === 'classes' && renderClasses(artifacts as ClassInfo[])}
-          {type === 'integrations' && renderIntegrations(artifacts as Integration[])}
+          {type === 'apiEndpoints' && renderApiEndpoints(artifacts as ApiEndpoint[], t)}
+          {type === 'components' && renderComponents(artifacts as ComponentInfo[], t)}
+          {type === 'functions' && renderFunctions(artifacts as FunctionInfo[], t)}
+          {type === 'classes' && renderClasses(artifacts as ClassInfo[], t)}
+          {type === 'integrations' && renderIntegrations(artifacts as Integration[], t)}
         </div>
       )}
     </div>
   );
 }
 
-function renderApiEndpoints(endpoints: ApiEndpoint[]) {
+function renderApiEndpoints(endpoints: ApiEndpoint[], t: any) {
   return endpoints.map((api, idx) => (
     <div key={idx} className="text-sm">
       <div className="font-mono font-semibold text-blue-600">
@@ -103,17 +105,17 @@ function renderApiEndpoints(endpoints: ApiEndpoint[]) {
       </div>
       <div className="text-xs text-muted-foreground mt-1">{api.purpose}</div>
       {api.requestFormat && (
-        <div className="text-xs text-muted-foreground">Request: {api.requestFormat}</div>
+        <div className="text-xs text-muted-foreground">{t('logs.artifacts.request')} {api.requestFormat}</div>
       )}
       {api.responseFormat && (
-        <div className="text-xs text-muted-foreground">Response: {api.responseFormat}</div>
+        <div className="text-xs text-muted-foreground">{t('logs.artifacts.response')} {api.responseFormat}</div>
       )}
       <div className="text-xs text-gray-500 mt-1 font-mono">{api.location}</div>
     </div>
   ));
 }
 
-function renderComponents(components: ComponentInfo[]) {
+function renderComponents(components: ComponentInfo[], t: any) {
   return components.map((comp, idx) => (
     <div key={idx} className="text-sm">
       <div className="font-semibold">
@@ -121,11 +123,11 @@ function renderComponents(components: ComponentInfo[]) {
       </div>
       <div className="text-xs text-muted-foreground mt-1">{comp.purpose}</div>
       {comp.props && (
-        <div className="text-xs text-muted-foreground">Props: {comp.props}</div>
+        <div className="text-xs text-muted-foreground">{t('logs.artifacts.props')} {comp.props}</div>
       )}
       {comp.exports && comp.exports.length > 0 && (
         <div className="text-xs text-muted-foreground">
-          Exports: {comp.exports.join(', ')}
+          {t('logs.artifacts.exports')} {comp.exports.join(', ')}
         </div>
       )}
       <div className="text-xs text-gray-500 mt-1 font-mono">{comp.location}</div>
@@ -133,16 +135,16 @@ function renderComponents(components: ComponentInfo[]) {
   ));
 }
 
-function renderFunctions(functions: FunctionInfo[]) {
+function renderFunctions(functions: FunctionInfo[], t: any) {
   return functions.map((func, idx) => (
     <div key={idx} className="text-sm">
       <div className="font-semibold">
-        {func.name} {func.isExported && <span className="text-xs text-green-600">(exported)</span>}
+        {func.name} {func.isExported && <span className="text-xs text-green-600">{t('logs.artifacts.exported')}</span>}
       </div>
       <div className="text-xs text-muted-foreground mt-1">{func.purpose}</div>
       {func.signature && (
         <div className="text-xs text-muted-foreground font-mono">
-          Signature: {func.signature}
+          {t('logs.artifacts.signature')} {func.signature}
         </div>
       )}
       <div className="text-xs text-gray-500 mt-1 font-mono">{func.location}</div>
@@ -150,16 +152,16 @@ function renderFunctions(functions: FunctionInfo[]) {
   ));
 }
 
-function renderClasses(classes: ClassInfo[]) {
+function renderClasses(classes: ClassInfo[], t: any) {
   return classes.map((cls, idx) => (
     <div key={idx} className="text-sm">
       <div className="font-semibold">
-        {cls.name} {cls.isExported && <span className="text-xs text-green-600">(exported)</span>}
+        {cls.name} {cls.isExported && <span className="text-xs text-green-600">{t('logs.artifacts.exported')}</span>}
       </div>
       <div className="text-xs text-muted-foreground mt-1">{cls.purpose}</div>
       {cls.methods && cls.methods.length > 0 && (
         <div className="text-xs text-muted-foreground">
-          Methods: {cls.methods.join(', ')}
+          {t('logs.artifacts.methods')} {cls.methods.join(', ')}
         </div>
       )}
       <div className="text-xs text-gray-500 mt-1 font-mono">{cls.location}</div>
@@ -167,15 +169,15 @@ function renderClasses(classes: ClassInfo[]) {
   ));
 }
 
-function renderIntegrations(integrations: Integration[]) {
+function renderIntegrations(integrations: Integration[], t: any) {
   return integrations.map((intg, idx) => (
     <div key={idx} className="text-sm">
       <div className="font-semibold">{intg.description}</div>
       <div className="text-xs text-muted-foreground mt-1">
-        Frontend: {intg.frontendComponent}
+        {t('logs.artifacts.frontend')} {intg.frontendComponent}
       </div>
-      <div className="text-xs text-muted-foreground">Backend: {intg.backendEndpoint}</div>
-      <div className="text-xs text-muted-foreground">Data Flow: {intg.dataFlow}</div>
+      <div className="text-xs text-muted-foreground">{t('logs.artifacts.backend')} {intg.backendEndpoint}</div>
+      <div className="text-xs text-muted-foreground">{t('logs.artifacts.dataFlow')} {intg.dataFlow}</div>
     </div>
   ));
 }

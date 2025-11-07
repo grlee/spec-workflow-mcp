@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { Card, CardContent } from './ui/card';
 import type { ImplementationLogEntry } from '../lib/vscode-api';
@@ -9,6 +10,7 @@ interface LogEntryCardProps {
 }
 
 export function LogEntryCard({ entry }: LogEntryCardProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const formatDate = (timestamp: string) => {
@@ -53,32 +55,32 @@ export function LogEntryCard({ entry }: LogEntryCardProps) {
                 <div className="text-lg font-bold text-green-600">
                   +{entry.statistics.linesAdded}
                 </div>
-                <div className="text-xs text-muted-foreground">Added</div>
+                <div className="text-xs text-muted-foreground">{t('logs.entry.added')}</div>
               </div>
               <div className="p-2 bg-muted rounded">
                 <div className="text-lg font-bold text-red-600">
                   -{entry.statistics.linesRemoved}
                 </div>
-                <div className="text-xs text-muted-foreground">Removed</div>
+                <div className="text-xs text-muted-foreground">{t('logs.entry.removed')}</div>
               </div>
               <div className="p-2 bg-muted rounded">
                 <div className="text-lg font-bold text-blue-600">
                   {entry.statistics.filesChanged}
                 </div>
-                <div className="text-xs text-muted-foreground">Files Changed</div>
+                <div className="text-xs text-muted-foreground">{t('logs.entry.filesChanged')}</div>
               </div>
               <div className="p-2 bg-muted rounded">
                 <div className="text-lg font-bold text-purple-600">
                   {(entry.statistics.linesAdded - entry.statistics.linesRemoved)}
                 </div>
-                <div className="text-xs text-muted-foreground">Net Change</div>
+                <div className="text-xs text-muted-foreground">{t('logs.entry.netChange')}</div>
               </div>
             </div>
 
             {/* Files Modified */}
             {entry.filesModified && entry.filesModified.length > 0 && (
               <div>
-                <h4 className="text-sm font-semibold mb-2">Files Modified</h4>
+                <h4 className="text-sm font-semibold mb-2">{t('logs.entry.filesModified')}</h4>
                 <ul className="space-y-1">
                   {entry.filesModified.map((file: string, idx: number) => (
                     <li key={idx} className="text-xs text-muted-foreground font-mono">
@@ -92,7 +94,7 @@ export function LogEntryCard({ entry }: LogEntryCardProps) {
             {/* Files Created */}
             {entry.filesCreated && entry.filesCreated.length > 0 && (
               <div>
-                <h4 className="text-sm font-semibold mb-2">Files Created</h4>
+                <h4 className="text-sm font-semibold mb-2">{t('logs.entry.filesCreated')}</h4>
                 <ul className="space-y-1">
                   {entry.filesCreated.map((file: string, idx: number) => (
                     <li key={idx} className="text-xs text-muted-foreground font-mono">

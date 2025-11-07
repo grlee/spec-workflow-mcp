@@ -628,7 +628,7 @@ Review the existing steering documents (if any) and help me improve or complete 
             <TabsTrigger value="tasks" className="text-xs" title={t('tabs.tasks')}>
               <CheckSquare className="h-3 w-3" />
             </TabsTrigger>
-            <TabsTrigger value="logs" className="text-xs" title="Implementation Logs">
+            <TabsTrigger value="logs" className="text-xs" title={t('tabs.logs')}>
               <FileText className="h-3 w-3" />
             </TabsTrigger>
             <TabsTrigger value="approvals" className="text-xs relative" title={t('tabs.approvals')}>
