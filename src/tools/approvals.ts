@@ -25,7 +25,7 @@ CRITICAL: Only provide filePath parameter for requests - the dashboard reads fil
       },
       projectPath: {
         type: 'string',
-        description: 'Absolute path to the project root (required for request, optional for status/delete)'
+        description: 'Absolute path to the project root (optional - uses server context path if not provided)'
       },
       approvalId: {
         type: 'string',
@@ -61,7 +61,7 @@ CRITICAL: Only provide filePath parameter for requests - the dashboard reads fil
 // Type definitions for discriminated unions
 type RequestApprovalArgs = {
   action: 'request';
-  projectPath: string;
+  projectPath?: string;
   title: string;
   filePath: string;
   type: 'document' | 'action';
@@ -116,10 +116,10 @@ export async function approvalsHandler(
     case 'request':
       if (isRequestApproval(typedArgs)) {
         // Validate required fields for request
-        if (!args.projectPath || !args.title || !args.filePath || !args.type || !args.category || !args.categoryName) {
+        if (!args.title || !args.filePath || !args.type || !args.category || !args.categoryName) {
           return {
             success: false,
-            message: 'Missing required fields for request action. Required: projectPath, title, filePath, type, category, categoryName'
+            message: 'Missing required fields for request action. Required: title, filePath, type, category, categoryName'
           };
         }
         return handleRequestApproval(typedArgs, context);
@@ -167,11 +167,19 @@ async function handleRequestApproval(
   args: RequestApprovalArgs,
   context: ToolContext
 ): Promise<ToolResponse> {
-  // No need for validation here as types ensure all fields are present
+  // Use context projectPath as default, allow override via args
+  const projectPath = args.projectPath || context.projectPath;
+  
+  if (!projectPath) {
+    return {
+      success: false,
+      message: 'Project path is required but not provided in context or arguments'
+    };
+  }
 
   try {
     // Validate and resolve project path
-    const validatedProjectPath = await validateProjectPath(args.projectPath);
+    const validatedProjectPath = await validateProjectPath(projectPath);
 
     const approvalStorage = new ApprovalStorage(validatedProjectPath);
     await approvalStorage.start();
