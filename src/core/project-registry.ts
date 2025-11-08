@@ -25,6 +25,7 @@ export function generateProjectId(absolutePath: string): string {
 export class ProjectRegistry {
   private registryPath: string;
   private registryDir: string;
+  private needsInitialization: boolean = false;
 
   constructor() {
     this.registryDir = join(homedir(), '.spec-workflow-mcp');
@@ -49,13 +50,39 @@ export class ProjectRegistry {
   private async readRegistry(): Promise<Map<string, ProjectRegistryEntry>> {
     await this.ensureRegistryDir();
 
+    let fileWasEmpty = false;
     try {
       const content = await fs.readFile(this.registryPath, 'utf-8');
-      const data = JSON.parse(content) as Record<string, ProjectRegistryEntry>;
+      // Handle empty or whitespace-only files
+      const trimmedContent = content.trim();
+      if (!trimmedContent) {
+        console.error(`[ProjectRegistry] Warning: ${this.registryPath} is empty, initializing with empty registry`);
+        fileWasEmpty = true;
+        // Mark that we need to write the file
+        this.needsInitialization = true;
+        return new Map();
+      }
+      const data = JSON.parse(trimmedContent) as Record<string, ProjectRegistryEntry>;
       return new Map(Object.entries(data));
     } catch (error: any) {
       if (error.code === 'ENOENT') {
         // File doesn't exist yet, return empty map
+        this.needsInitialization = true;
+        return new Map();
+      }
+      if (error instanceof SyntaxError) {
+        // JSON parsing error - file is corrupted or invalid
+        console.error(`[ProjectRegistry] Error: Failed to parse ${this.registryPath}: ${error.message}`);
+        console.error(`[ProjectRegistry] The file may be corrupted. Initializing with empty registry.`);
+        // Back up the corrupted file
+        try {
+          const backupPath = `${this.registryPath}.corrupted.${Date.now()}`;
+          await fs.copyFile(this.registryPath, backupPath);
+          console.error(`[ProjectRegistry] Corrupted file backed up to: ${backupPath}`);
+        } catch (backupError) {
+          // Ignore backup errors
+        }
+        this.needsInitialization = true;
         return new Map();
       }
       throw error;
@@ -166,16 +193,19 @@ export class ProjectRegistry {
   async cleanupStaleProjects(): Promise<number> {
     const registry = await this.readRegistry();
     let removedCount = 0;
+    let needsWrite = this.needsInitialization; // Write if file needs initialization
 
     for (const [projectId, entry] of registry.entries()) {
       if (!this.isProcessAlive(entry.pid)) {
         registry.delete(projectId);
         removedCount++;
+        needsWrite = true;
       }
     }
 
-    if (removedCount > 0) {
+    if (needsWrite) {
       await this.writeRegistry(registry);
+      this.needsInitialization = false; // Reset flag after successful write
     }
 
     return removedCount;
