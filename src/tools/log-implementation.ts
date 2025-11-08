@@ -211,7 +211,7 @@ Task: "Implemented logs dashboard with real-time updates"
     properties: {
       projectPath: {
         type: 'string',
-        description: 'Absolute path to the project root'
+        description: 'Absolute path to the project root (optional - uses server context path if not provided)'
       },
       specName: {
         type: 'string',
@@ -282,7 +282,7 @@ Task: "Implemented logs dashboard with real-time updates"
         }
       }
     },
-    required: ['projectPath', 'specName', 'taskId', 'summary', 'filesModified', 'filesCreated', 'statistics', 'artifacts']
+    required: ['specName', 'taskId', 'summary', 'filesModified', 'filesCreated', 'statistics', 'artifacts']
   }
 };
 
@@ -291,7 +291,6 @@ export async function logImplementationHandler(
   context: ToolContext
 ): Promise<ToolResponse> {
   const {
-    projectPath,
     specName,
     taskId,
     summary,
@@ -300,6 +299,16 @@ export async function logImplementationHandler(
     statistics,
     artifacts
   } = args;
+  
+  // Use context projectPath as default, allow override via args
+  const projectPath = args.projectPath || context.projectPath;
+  
+  if (!projectPath) {
+    return {
+      success: false,
+      message: 'Project path is required but not provided in context or arguments'
+    };
+  }
 
   try {
     // Validate artifacts is provided

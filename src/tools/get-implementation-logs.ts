@@ -80,7 +80,7 @@ all: true  // Only use if absolutely necessary - strongly discouraged
     properties: {
       projectPath: {
         type: 'string',
-        description: 'Absolute path to the project root'
+        description: 'Absolute path to the project root (optional - uses server context path if not provided)'
       },
       specName: {
         type: 'string',
@@ -104,7 +104,7 @@ all: true  // Only use if absolutely necessary - strongly discouraged
         description: 'Set to true to retrieve ALL logs without filters. ⚠️ STRONGLY DISCOURAGED - only use when absolutely necessary and you need complete implementation history. Defaults to false. You MUST use filters (taskId, search, or artifactType) if all is false or omitted.'
       }
     },
-    required: ['projectPath', 'specName']
+    required: ['specName']
   }
 };
 
@@ -113,13 +113,22 @@ export async function getImplementationLogsHandler(
   context: ToolContext
 ): Promise<ToolResponse> {
   const {
-    projectPath,
     specName,
     taskId,
     keyword,
     artifactType,
     all = false
   } = args;
+  
+  // Use context projectPath as default, allow override via args
+  const projectPath = args.projectPath || context.projectPath;
+  
+  if (!projectPath) {
+    return {
+      success: false,
+      message: 'Project path is required but not provided in context or arguments'
+    };
+  }
 
   try {
     // Validation: Require filters when all=false (default)
