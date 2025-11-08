@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.4] - 2025-11-08
+
+### Fixed
+- Fixed dashboard startup failure with "Unexpected end of JSON input" error on macOS/Linux when configuration files were empty or corrupted.
+- Added proper JSON parsing error handling to catch `SyntaxError` in addition to `ENOENT` errors.
+- Implemented automatic initialization of JSON files with valid default content on first use.
+- Added automatic backup of corrupted configuration files before overwriting.
+- Improved error logging to identify which file is causing parse errors and where backups are stored.
+
 ## [2.0.3]
 
 ### Changed

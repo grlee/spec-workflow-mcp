@@ -32,14 +32,48 @@ export class ExecutionHistoryManager {
 
     try {
       const content = await fs.readFile(this.historyPath, 'utf-8');
-      return JSON.parse(content) as JobExecutionLog;
-    } catch (error: any) {
-      if (error.code === 'ENOENT') {
-        // File doesn't exist yet, return default
-        return {
+      // Handle empty or whitespace-only files
+      const trimmedContent = content.trim();
+      if (!trimmedContent) {
+        console.error(`[ExecutionHistoryManager] Warning: ${this.historyPath} is empty, using default history`);
+        const defaultHistory = {
           executions: [],
           lastUpdated: new Date().toISOString()
         };
+        // Write default history to file
+        await this.saveHistory(defaultHistory);
+        return defaultHistory;
+      }
+      return JSON.parse(trimmedContent) as JobExecutionLog;
+    } catch (error: any) {
+      if (error.code === 'ENOENT') {
+        // File doesn't exist yet, create it with default history
+        const defaultHistory = {
+          executions: [],
+          lastUpdated: new Date().toISOString()
+        };
+        await this.saveHistory(defaultHistory);
+        return defaultHistory;
+      }
+      if (error instanceof SyntaxError) {
+        // JSON parsing error - file is corrupted or invalid
+        console.error(`[ExecutionHistoryManager] Error: Failed to parse ${this.historyPath}: ${error.message}`);
+        console.error(`[ExecutionHistoryManager] The file may be corrupted. Using default history.`);
+        // Back up the corrupted file
+        try {
+          const backupPath = `${this.historyPath}.corrupted.${Date.now()}`;
+          await fs.copyFile(this.historyPath, backupPath);
+          console.error(`[ExecutionHistoryManager] Corrupted file backed up to: ${backupPath}`);
+        } catch (backupError) {
+          // Ignore backup errors
+        }
+        const defaultHistory = {
+          executions: [],
+          lastUpdated: new Date().toISOString()
+        };
+        // Write default history to file
+        await this.saveHistory(defaultHistory);
+        return defaultHistory;
       }
       throw error;
     }

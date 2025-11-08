@@ -31,15 +31,51 @@ export class SettingsManager {
 
     try {
       const content = await fs.readFile(this.settingsPath, 'utf-8');
-      return JSON.parse(content) as GlobalSettings;
-    } catch (error: any) {
-      if (error.code === 'ENOENT') {
-        // File doesn't exist yet, return default settings
-        return {
+      // Handle empty or whitespace-only files
+      const trimmedContent = content.trim();
+      if (!trimmedContent) {
+        console.error(`[SettingsManager] Warning: ${this.settingsPath} is empty, using default settings`);
+        const defaultSettings = {
           automationJobs: [],
           createdAt: new Date().toISOString(),
           lastModified: new Date().toISOString()
         };
+        // Write default settings to file
+        await this.saveSettings(defaultSettings);
+        return defaultSettings;
+      }
+      return JSON.parse(trimmedContent) as GlobalSettings;
+    } catch (error: any) {
+      if (error.code === 'ENOENT') {
+        // File doesn't exist yet, create it with default settings
+        const defaultSettings = {
+          automationJobs: [],
+          createdAt: new Date().toISOString(),
+          lastModified: new Date().toISOString()
+        };
+        await this.saveSettings(defaultSettings);
+        return defaultSettings;
+      }
+      if (error instanceof SyntaxError) {
+        // JSON parsing error - file is corrupted or invalid
+        console.error(`[SettingsManager] Error: Failed to parse ${this.settingsPath}: ${error.message}`);
+        console.error(`[SettingsManager] The file may be corrupted. Using default settings.`);
+        // Back up the corrupted file
+        try {
+          const backupPath = `${this.settingsPath}.corrupted.${Date.now()}`;
+          await fs.copyFile(this.settingsPath, backupPath);
+          console.error(`[SettingsManager] Corrupted file backed up to: ${backupPath}`);
+        } catch (backupError) {
+          // Ignore backup errors
+        }
+        const defaultSettings = {
+          automationJobs: [],
+          createdAt: new Date().toISOString(),
+          lastModified: new Date().toISOString()
+        };
+        // Write default settings to file
+        await this.saveSettings(defaultSettings);
+        return defaultSettings;
       }
       throw error;
     }
