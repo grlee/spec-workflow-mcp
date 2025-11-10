@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { useApi } from '../api/api';
+import { useApi, useApiActions } from '../api/api';
 import { useWs } from '../ws/WebSocketProvider';
 import { useSearchParams } from 'react-router-dom';
 import { useNotifications } from '../notifications/NotificationProvider';
@@ -215,7 +215,7 @@ function StatusPill({
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
-  const { updateTaskStatus } = useApi();
+  const { updateTaskStatus } = useApiActions();
   const { showNotification } = useNotifications();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -447,7 +447,7 @@ function SpecCard({ spec, onSelect, isSelected }: { spec: any; onSelect: (spec: 
 
 function TaskList({ specName }: { specName: string }) {
   const { t } = useTranslation();
-  const { getSpecTasksProgress, updateTaskStatus } = useApi();
+  const { getSpecTasksProgress, updateTaskStatus } = useApiActions();
   const { subscribe, unsubscribe } = useWs();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any | null>(null);
@@ -526,17 +526,36 @@ function TaskList({ specName }: { specName: string }) {
           });
 
           // Check if task list actually changed to avoid unnecessary re-renders
-          const taskListChanged = prevData.taskList.length !== mergedTaskList.length ||
-            prevData.taskList.some((prevTask: any, index: number) => {
-              const newTask = mergedTaskList[index];
-              return !newTask || prevTask.id !== newTask.id || prevTask.status !== newTask.status;
-            });
+          if (prevData.taskList.length !== mergedTaskList.length) {
+            // Length changed, definitely need to update
+          } else {
+            // Same length - check if any task actually changed
+            let hasChanges = false;
 
-          // Only update if data actually changed
-          if (!taskListChanged &&
-              prevData.total === event.summary.total &&
-              prevData.inProgress === event.inProgress) {
-            return prevData;
+            // Compare task lists by creating maps for efficient lookup
+            const prevTaskMap = new Map(prevData.taskList.map((t: any) => [t.id, t]));
+            const newTaskMap = new Map(mergedTaskList.map((t: any) => [t.id, t]));
+
+            // Check if any task changed
+            for (const [id, newTask] of newTaskMap) {
+              const prevTask = prevTaskMap.get(id);
+              if (!prevTask ||
+                  prevTask.status !== newTask.status ||
+                  prevTask.title !== newTask.title ||
+                  prevTask.completed !== newTask.completed ||
+                  prevTask.inProgress !== newTask.inProgress) {
+                hasChanges = true;
+                break;
+              }
+            }
+
+            // Also check if total, progress, or inProgress changed
+            if (!hasChanges &&
+                prevData.total === event.summary.total &&
+                prevData.inProgress === event.inProgress) {
+              // Nothing changed - return previous data to avoid re-render
+              return prevData;
+            }
           }
 
           const completedCount = mergedTaskList.filter((t: any) => t.status === 'completed').length;
