@@ -174,7 +174,7 @@ export class ImplementationLogManager {
         // Parse artifact item headers (#### for individual items)
         else if (line.startsWith('#### ') && currentArtifactType) {
           // Save previous item
-          if (currentItem && Object.keys(currentItem).length > 0) {
+          if (Object.keys(currentItem).length > 0) {
             if (!artifacts[currentArtifactType]) artifacts[currentArtifactType] = [];
             (artifacts[currentArtifactType] as any).push(currentItem);
           }
