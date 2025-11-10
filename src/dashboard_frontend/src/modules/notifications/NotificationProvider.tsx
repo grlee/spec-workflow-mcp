@@ -86,9 +86,13 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       
       oscillator.frequency.setValueAtTime(800, audioContextRef.current.currentTime);
       oscillator.frequency.setValueAtTime(600, audioContextRef.current.currentTime + 0.1);
-      
+
+      // Set initial volume and fade to 1% of that volume
       gainNode.gain.setValueAtTime(volume, audioContextRef.current.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.5);
+      gainNode.gain.exponentialRampToValueAtTime(
+        Math.max(0.01, volume * 0.01),
+        audioContextRef.current.currentTime + 0.5
+      );
       
       oscillator.start(audioContextRef.current.currentTime);
       oscillator.stop(audioContextRef.current.currentTime + 0.5);
