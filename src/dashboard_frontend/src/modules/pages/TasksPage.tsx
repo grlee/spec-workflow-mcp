@@ -1320,8 +1320,6 @@ function Content() {
     }
   }, [storageKey, setParams]);
 
-  useEffect(() => { reloadAll(); }, [reloadAll]);
-
   // Initialize spec selection with three-tier approach
   useEffect(() => {
     if (specFromUrl) {
