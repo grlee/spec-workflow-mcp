@@ -231,8 +231,12 @@ export class ImplementationLogManager {
         (artifacts[currentArtifactType] as any).push(currentItem);
       }
 
+      if (!taskId || !idValue) {
+        return null;
+      }
+
       const entry: ImplementationLogEntry = {
-        id: idValue || randomUUID(),
+        id: idValue,
         taskId,
         timestamp,
         summary,
