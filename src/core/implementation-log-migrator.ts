@@ -35,8 +35,9 @@ export class ImplementationLogMigrator {
    */
   private generateFileName(entry: ImplementationLogEntry): string {
     const sanitizedTaskId = this.sanitizeTaskId(entry.taskId);
-    const timestamp = new Date(entry.timestamp).toISOString().replace(/[:.]/g, '').split('T')[0] +
-                      new Date(entry.timestamp).toISOString().split('T')[1].replace(/[:.Z]/g, '').substring(0, 6);
+    const dateObj = new Date(entry.timestamp);
+    const timestamp = dateObj.toISOString().replace(/[:.]/g, '').split('T')[0] +
+                      dateObj.toISOString().split('T')[1].replace(/[:.Z]/g, '').substring(0, 6);
     const idPrefix = entry.id.substring(0, 8);
     return `task-${sanitizedTaskId}_${timestamp}_${idPrefix}.md`;
   }
