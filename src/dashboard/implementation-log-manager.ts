@@ -52,7 +52,6 @@ export class ImplementationLogManager {
    */
   private parseMarkdownContent(content: string): ImplementationLogEntry | null {
     try {
-      console.log('[Parser] Starting markdown parsing...');
       const lines = content.split('\n');
       let idValue = '';
       let taskId = '';
@@ -154,7 +153,6 @@ export class ImplementationLogManager {
         else if (line.startsWith('### ')) {
           // Save previous item before switching artifact type
           if (currentItem && Object.keys(currentItem).length > 0 && currentArtifactType) {
-            console.log(`[Parser] Saving item to ${currentArtifactType}:`, JSON.stringify(currentItem, null, 2));
             if (!artifacts[currentArtifactType]) artifacts[currentArtifactType] = [];
             (artifacts[currentArtifactType] as any).push(currentItem);
             currentItem = {};
@@ -172,20 +170,17 @@ export class ImplementationLogManager {
           } else if (sectionName.includes('integration')) {
             currentArtifactType = 'integrations';
           }
-          console.log(`[Parser] Switched to artifact type: ${currentArtifactType} (from line: "${line.trim()}")`);
         }
         // Parse artifact item headers (#### for individual items)
         else if (line.startsWith('#### ') && currentArtifactType) {
           // Save previous item
           if (currentItem && Object.keys(currentItem).length > 0) {
-            console.log(`[Parser] Saving item to ${currentArtifactType}:`, JSON.stringify(currentItem, null, 2));
             if (!artifacts[currentArtifactType]) artifacts[currentArtifactType] = [];
             (artifacts[currentArtifactType] as any).push(currentItem);
           }
           currentItem = {};
 
           const itemHeader = line.slice(5).trim();
-          console.log(`[Parser] Parsing item header: "${itemHeader}" for type: ${currentArtifactType}`);
 
           // For API endpoints, extract method and path from header like "GET /api/users"
           if (currentArtifactType === 'apiEndpoints') {
@@ -193,14 +188,11 @@ export class ImplementationLogManager {
             if (parts.length >= 2) {
               currentItem.method = parts[0];
               currentItem.path = parts.slice(1).join(' ');
-              console.log(`[Parser] Extracted method="${currentItem.method}", path="${currentItem.path}"`);
             } else {
               currentItem.name = itemHeader;
-              console.log(`[Parser] No space in header, set name="${currentItem.name}"`);
             }
           } else {
             currentItem.name = itemHeader;
-            console.log(`[Parser] Set name="${currentItem.name}"`);
           }
         }
         // Parse file lists
@@ -219,33 +211,25 @@ export class ImplementationLogManager {
           if (kv) {
             // Map property name to match TypeScript interface
             const mappedKey = mapPropertyName(kv.key);
-            console.log(`[Parser] Key-value: "${kv.key}" → mapped to "${mappedKey}", value="${kv.value}"`);
 
             // Handle arrays (exports, methods)
             if (mappedKey === 'exports' || mappedKey === 'methods') {
               const items = kv.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
               currentItem[mappedKey] = items;
-              console.log(`[Parser] Set array ${mappedKey}:`, items);
             } else {
               // Convert value to appropriate type (Yes/No → boolean, N/A → empty string, etc.)
               const convertedValue = convertValue(mappedKey, kv.value);
-              console.log(`[Parser] Converted value: "${kv.value}" → ${JSON.stringify(convertedValue)} (type: ${typeof convertedValue})`);
               currentItem[mappedKey] = convertedValue;
             }
-          } else {
-            console.log(`[Parser] Failed to parse key-value from line: "${line.trim()}"`);
           }
         }
       }
 
       // Save last artifact item
       if (currentItem && Object.keys(currentItem).length > 0 && currentArtifactType) {
-        console.log(`[Parser] Saving final item to ${currentArtifactType}:`, JSON.stringify(currentItem, null, 2));
         if (!artifacts[currentArtifactType]) artifacts[currentArtifactType] = [];
         (artifacts[currentArtifactType] as any).push(currentItem);
       }
-
-      console.log('[Parser] Final artifacts structure:', JSON.stringify(artifacts, null, 2));
 
       const entry: ImplementationLogEntry = {
         id: idValue || randomUUID(),
@@ -262,17 +246,9 @@ export class ImplementationLogManager {
         artifacts
       };
 
-      console.log('[Parser] Parsing complete. Task:', taskId, 'Artifacts count:', {
-        apiEndpoints: artifacts.apiEndpoints?.length || 0,
-        components: artifacts.components?.length || 0,
-        functions: artifacts.functions?.length || 0,
-        classes: artifacts.classes?.length || 0,
-        integrations: artifacts.integrations?.length || 0
-      });
-
       return entry;
     } catch (error) {
-      console.error('[Parser] Error parsing markdown:', error);
+      console.error('Error parsing markdown implementation log:', error);
       return null;
     }
   }
