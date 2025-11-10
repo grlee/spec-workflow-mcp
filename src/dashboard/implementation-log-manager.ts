@@ -114,7 +114,7 @@ export class ImplementationLogManager {
 
         // Parse metadata
         if (line.includes('**Log ID:**')) {
-          idValue = line.split('**Log ID:**')[1]?.trim() || randomUUID();
+          idValue = line.split('**Log ID:**')[1]?.trim() || '';
         }
         if (line.startsWith('# Implementation Log: Task')) {
           taskId = line.split('Task ')[1] || '';
