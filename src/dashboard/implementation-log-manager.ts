@@ -226,7 +226,7 @@ export class ImplementationLogManager {
       }
 
       // Save last artifact item
-      if (currentItem && Object.keys(currentItem).length > 0 && currentArtifactType) {
+      if (Object.keys(currentItem).length > 0 && currentArtifactType) {
         if (!artifacts[currentArtifactType]) artifacts[currentArtifactType] = [];
         (artifacts[currentArtifactType] as any).push(currentItem);
       }
