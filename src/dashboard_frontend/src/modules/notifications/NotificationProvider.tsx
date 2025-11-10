@@ -28,13 +28,13 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const audioContextRef = useRef<AudioContext | null>(null);
   const [notifications, setNotifications] = useState<Array<{ id: string; message: string; type: 'info' | 'success' | 'warning' | 'error'; timestamp: number }>>([]);
   const [soundEnabled, setSoundEnabled] = useState(() => {
-    // Load sound preference from sessionStorage (since ports are ephemeral)
-    const saved = sessionStorage.getItem('notification-sound-enabled');
+    // Load sound preference from localStorage
+    const saved = localStorage.getItem('notification-sound-enabled');
     return saved !== null ? JSON.parse(saved) : true;
   });
   const [volume, setVolumeState] = useState(() => {
-    // Load volume preference from sessionStorage, default to max volume (100%)
-    const saved = sessionStorage.getItem('notification-volume');
+    // Load volume preference from localStorage, default to max volume (100%)
+    const saved = localStorage.getItem('notification-volume');
     return saved !== null ? parseFloat(saved) : 1.0;
   });
 
@@ -42,7 +42,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const toggleSound = useCallback(() => {
     setSoundEnabled(prev => {
       const newValue = !prev;
-      sessionStorage.setItem('notification-sound-enabled', JSON.stringify(newValue));
+      localStorage.setItem('notification-sound-enabled', JSON.stringify(newValue));
       return newValue;
     });
   }, []);
@@ -51,7 +51,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const setVolume = useCallback((newVolume: number) => {
     const clampedVolume = Math.max(0, Math.min(1, newVolume));
     setVolumeState(clampedVolume);
-    sessionStorage.setItem('notification-volume', clampedVolume.toString());
+    localStorage.setItem('notification-volume', clampedVolume.toString());
   }, []);
 
   // Play notification sound
@@ -172,7 +172,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     } catch (error) {
       console.error('[NotificationProvider] Failed to handle task update:', error);
     }
-  }, [getSpecTasksProgress]);
+  }, [getSpecTasksProgress, playNotificationSound, showNotification]);
 
   // Detect new approvals
   useEffect(() => {
