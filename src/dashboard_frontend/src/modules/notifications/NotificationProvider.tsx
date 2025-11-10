@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useApi } from '../api/api';
+import { Howl } from 'howler';
 
 // Split into two contexts to prevent unnecessary re-renders
 // Actions context contains stable functions that don't change
@@ -25,7 +26,6 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const prevApprovalsRef = useRef<typeof approvals>([]);
   const prevTaskDataRef = useRef<Map<string, any>>(new Map());
   const isInitialLoadRef = useRef(true);
-  const audioContextRef = useRef<AudioContext | null>(null);
   const [notifications, setNotifications] = useState<Array<{ id: string; message: string; type: 'info' | 'success' | 'warning' | 'error'; timestamp: number }>>([]);
   const [soundEnabled, setSoundEnabled] = useState(() => {
     // Load sound preference from localStorage
@@ -54,54 +54,41 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     localStorage.setItem('notification-volume', clampedVolume.toString());
   }, []);
 
-  // Play notification sound
-  const playNotificationSound = useCallback(async () => {
-    // Check if sound is enabled
+  // Play notification sound using Howler.js
+  const playNotificationSound = useCallback(() => {
     if (!soundEnabled) {
       return;
     }
-    
+
     try {
-      // Create or resume AudioContext only when we actually need to play a sound
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      }
-      
-      // Resume if suspended (this is where user interaction is required)
-      if (audioContextRef.current.state === 'suspended') {
-        await audioContextRef.current.resume();
-      }
-      
-      // Only proceed if we have a running context
-      if (audioContextRef.current.state !== 'running') {
-        console.warn('AudioContext not ready for playing sound - user interaction may be required');
-        return;
-      }
-      
-      const oscillator = audioContextRef.current.createOscillator();
-      const gainNode = audioContextRef.current.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContextRef.current.destination);
-      
-      oscillator.frequency.setValueAtTime(800, audioContextRef.current.currentTime);
-      oscillator.frequency.setValueAtTime(600, audioContextRef.current.currentTime + 0.1);
+      console.log('[Audio] Playing notification with Howler - volume:', volume);
 
-      // Set gain immediately (not just scheduled) to ensure it applies before ramp
-      gainNode.gain.value = volume;
-      // Also schedule it for consistency with Web Audio API best practices
-      gainNode.gain.setValueAtTime(volume, audioContextRef.current.currentTime);
+      // Create a simple notification beep programmatically
+      // Using a publicly available notification sound for reliable testing
+      // You can replace this with a local audio file later
+      const notificationSound = 'https://notificationsounds.com/storage/sounds/file-sounds-1150-pristine.mp3';
 
-      // Use linearRamp (more predictable than exponentialRamp) to fade to 1% of volume
-      gainNode.gain.linearRampToValueAtTime(
-        volume * 0.01,
-        audioContextRef.current.currentTime + 0.5
-      );
+      const sound = new Howl({
+        src: [notificationSound],
+        volume: volume,  // Howler.js volume control - should work correctly!
+        html5: true, // Use HTML5 Audio (more reliable for simple sounds)
+        onend: function() {
+          sound.unload(); // Clean up after playing
+        },
+        onload: function() {
+          console.log('[Audio] Howler sound loaded successfully');
+        },
+        onloaderror: function(id, error) {
+          console.error('[Audio] Howler load error:', id, error);
+          // Fallback: try to play with Web Audio anyway
+        },
+        onplayerror: function(id, error) {
+          console.error('[Audio] Howler play error:', id, error);
+        }
+      });
 
-      console.log('[Audio] Playing notification - volume:', volume, 'initial gain:', gainNode.gain.value);
-      
-      oscillator.start(audioContextRef.current.currentTime);
-      oscillator.stop(audioContextRef.current.currentTime + 0.5);
+      sound.play();
+      console.log('[Audio] Howler sound playing - current volume:', sound.volume());
     } catch (error) {
       console.error('Could not play notification sound:', error);
     }
