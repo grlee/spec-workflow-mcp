@@ -347,7 +347,7 @@ export class ImplementationLogService {
         }
         // Parse artifact item headers (#### for individual items)
         else if (line.startsWith('#### ') && currentArtifactType) {
-          if (currentItem && Object.keys(currentItem).length > 0) {
+          if (Object.keys(currentItem).length > 0) {
             if (!artifacts[currentArtifactType]) artifacts[currentArtifactType] = [];
             (artifacts[currentArtifactType] as any).push(currentItem);
           }
