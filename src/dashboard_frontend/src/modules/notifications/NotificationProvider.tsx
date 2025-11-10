@@ -87,12 +87,18 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       oscillator.frequency.setValueAtTime(800, audioContextRef.current.currentTime);
       oscillator.frequency.setValueAtTime(600, audioContextRef.current.currentTime + 0.1);
 
-      // Set initial volume and fade to 1% of that volume
+      // Set gain immediately (not just scheduled) to ensure it applies before ramp
+      gainNode.gain.value = volume;
+      // Also schedule it for consistency with Web Audio API best practices
       gainNode.gain.setValueAtTime(volume, audioContextRef.current.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(
-        Math.max(0.01, volume * 0.01),
+
+      // Use linearRamp (more predictable than exponentialRamp) to fade to 1% of volume
+      gainNode.gain.linearRampToValueAtTime(
+        volume * 0.01,
         audioContextRef.current.currentTime + 0.5
       );
+
+      console.log('[Audio] Playing notification - volume:', volume, 'initial gain:', gainNode.gain.value);
       
       oscillator.start(audioContextRef.current.currentTime);
       oscillator.stop(audioContextRef.current.currentTime + 0.5);
