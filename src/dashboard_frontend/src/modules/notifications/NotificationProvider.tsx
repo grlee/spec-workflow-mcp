@@ -22,6 +22,7 @@ const NotificationActionsContext = createContext<NotificationActionsContextType 
 const NotificationStateContext = createContext<NotificationStateContextType | undefined>(undefined);
 
 export function NotificationProvider({ children }: { children: React.ReactNode }) {
+  console.log('[NotificationProvider] ========== COMPONENT MOUNTED WITH DIAGNOSTIC CODE ==========');
   const { approvals, specs, getSpecTasksProgress } = useApi();
   const prevApprovalsRef = useRef<typeof approvals>([]);
   const prevTaskDataRef = useRef<Map<string, any>>(new Map());
@@ -56,7 +57,10 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
   // Play notification sound using Howler.js
   const playNotificationSound = useCallback(() => {
+    console.log('[Audio] playNotificationSound called - soundEnabled:', soundEnabled, 'volume:', volume);
+
     if (!soundEnabled) {
+      console.log('[Audio] Sound is disabled, skipping playback');
       return;
     }
 
@@ -96,17 +100,22 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
 
   // Show toast notification
-  const showNotification = useCallback((message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info') => {
+  const showNotification = useCallback((message: string, type: 'info' | 'success' | 'warning' | 'error' = 'info', playSound: boolean = true) => {
     const id = Date.now().toString() + Math.random().toString(36).substr(2, 9);
     const notification = { id, message, type, timestamp: Date.now() };
-    
+
     setNotifications(prev => [...prev, notification]);
-    
+
+    // Play notification sound (unless explicitly disabled)
+    if (playSound) {
+      playNotificationSound();
+    }
+
     // Auto-remove after 5 seconds
     setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id));
     }, 5000);
-  }, []);
+  }, [playNotificationSound]);
 
   // Remove notification manually
   const removeNotification = useCallback((id: string) => {
@@ -135,9 +144,8 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
           
           console.log('[NotificationProvider] Task completion detected:', message);
           showNotification(message, 'success');
-          playNotificationSound();
         }
-        
+
         // Check for in-progress changes
         if (currentTaskData.inProgress !== prevTaskData.inProgress) {
           if (currentTaskData.inProgress && !prevTaskData.inProgress) {
@@ -145,11 +153,10 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
             const taskId = currentTaskData.inProgress;
             const task = currentTaskData.taskList?.find((t: any) => t.id === taskId || t.number === taskId);
             const taskTitle = task?.title || task?.description || `Task ${taskId}`;
-            
+
             const message = `Task started: ${taskTitle} in ${specDisplayName}`;
             console.log('[NotificationProvider] Task in-progress detected:', message);
             showNotification(message, 'info');
-            playNotificationSound();
           }
         }
         
@@ -169,7 +176,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     } catch (error) {
       console.error('[NotificationProvider] Failed to handle task update:', error);
     }
-  }, [getSpecTasksProgress, playNotificationSound, showNotification]);
+  }, [getSpecTasksProgress, showNotification]);
 
   // Detect new approvals
   useEffect(() => {
@@ -185,13 +192,13 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
     const newApprovals = approvals.filter(a => !prevIds.has(a.id));
     
     if (newApprovals.length > 0) {
-      // Play sound
+      // Play sound once for all new approvals
       playNotificationSound();
-      
-      // Show notifications for each new approval
+
+      // Show notifications for each new approval (without playing sound for each)
       newApprovals.forEach(approval => {
         const message = `New approval request: ${approval.title}`;
-        showNotification(message, 'info');
+        showNotification(message, 'info', false); // Pass false to skip sound for each toast
       });
     }
 
