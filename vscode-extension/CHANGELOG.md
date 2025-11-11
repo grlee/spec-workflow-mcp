@@ -4,7 +4,7 @@ All notable changes to the "spec-workflow-mcp" extension will be documented in t
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [1.2.0] - 2025-11-10
+## [1.1.2] - 2025-11-10
 
 ### Fixed
 - **Task Status Update Bug** (PR #139) - Fixed task status updates failing in VSCode extension:
