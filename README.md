@@ -1,3 +1,12 @@
+# Spec Workflow MCP
+
+[![npm version](https://img.shields.io/npm/v/@pimzino/spec-workflow-mcp)](https://www.npmjs.com/package/@pimzino/spec-workflow-mcp)
+[![VSCode Extension](https://img.shields.io/visual-studio-marketplace/v/Pimzino.spec-workflow-mcp)](https://marketplace.visualstudio.com/items?itemName=Pimzino.spec-workflow-mcp)
+
+A Model Context Protocol (MCP) server for structured spec-driven development with real-time dashboard and VSCode extension.
+
+## ☕ Support This Project
+
 <a href="https://buymeacoffee.com/Pimzino" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ## 📺 Showcase
