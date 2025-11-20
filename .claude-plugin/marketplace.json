@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "spec-workflow-mcp",
-      "version": "1.0.0",
+      "version": "2.0.9",
       "description": "MCP server for structured spec-driven development with real-time web dashboard and VSCode extension.",
       "author": {
         "name": "Pimzino"
@@ -17,7 +17,7 @@
     },
     {
       "name": "spec-workflow-mcp-with-dashboard",
-      "version": "1.0.0",
+      "version": "2.0.9",
       "description": "MCP server with auto-started dashboard for structured spec-driven development.",
       "author": {
         "name": "Pimzino"
