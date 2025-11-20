@@ -3,6 +3,9 @@
   "owner": {
     "name": "Pimzino"
   },
+  "metadata": {
+    "description": "Spec Workflow MCP provides structured spec-driven development with a sequential workflow (Requirements → Design → Tasks), real-time web dashboard, and VSCode extension support. Includes human approval gates at each stage and project steering guidance."
+  },
   "plugins": [
     {
       "name": "spec-workflow-mcp",
