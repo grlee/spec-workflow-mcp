@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Useful in restricted Windows environments where firewall or antivirus software blocks browser launches from processes
   - Prevents "failed to start dashboard: spawn EPERM" errors for users without administrator privileges
   - Dashboard URL is still printed to console so users can manually navigate to it
+- **Sandbox Environment Support** (fixes #144) - Added `SPEC_WORKFLOW_HOME` environment variable to support sandboxed MCP clients like Codex CLI:
+  - Allows overriding the default global state directory (`~/.spec-workflow-mcp`) to a writable location
+  - Essential for sandboxed environments where `$HOME` is read-only (e.g., Codex CLI with `sandbox_mode=workspace-write`)
+  - Supports both absolute paths and relative paths (resolved against current working directory)
+  - Added helpful error messages when permission errors occur, suggesting the `SPEC_WORKFLOW_HOME` workaround
+  - Updated Docker configuration to use `SPEC_WORKFLOW_HOME` by default
+  - Usage: `SPEC_WORKFLOW_HOME=/workspace/.spec-workflow-mcp npx spec-workflow-mcp /workspace`
 
 ### Fixed
 - **Archived Specs Display Content Correctly** (PR #146) - Fixed critical bug where archived specs were not displaying content correctly in the dashboard:
