@@ -222,6 +222,16 @@ The dashboard will be available at: http://localhost:5000
 
 [See Docker setup guide →](containers/README.md)
 
+## 🔒 Sandboxed Environments
+
+For sandboxed environments (e.g., Codex CLI with `sandbox_mode=workspace-write`) where `$HOME` is read-only, use the `SPEC_WORKFLOW_HOME` environment variable to redirect global state files to a writable location:
+
+```bash
+SPEC_WORKFLOW_HOME=/workspace/.spec-workflow-mcp npx -y @pimzino/spec-workflow-mcp@latest /workspace
+```
+
+[See Configuration Guide →](docs/CONFIGURATION.md#environment-variables)
+
 ## 📚 Documentation
 
 - [Configuration Guide](docs/CONFIGURATION.md) - Command-line options, config files
