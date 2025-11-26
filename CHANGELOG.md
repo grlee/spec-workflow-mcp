@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.10] - 2025-11-26
 
+### Added
+- **`--no-open` Flag for Dashboard** (PR #147, fixes #145) - Added new command-line flag to prevent automatic browser opening when starting the dashboard:
+  - Use `spec-workflow-mcp --dashboard --no-open` to start the dashboard without launching the browser
+  - Useful in restricted Windows environments where firewall or antivirus software blocks browser launches from processes
+  - Prevents "failed to start dashboard: spawn EPERM" errors for users without administrator privileges
+  - Dashboard URL is still printed to console so users can manually navigate to it
+
 ### Fixed
 - **Archived Specs Display Content Correctly** (PR #146) - Fixed critical bug where archived specs were not displaying content correctly in the dashboard:
   - Added new API endpoint `/api/projects/:projectId/specs/:name/all/archived` that reads documents from the archive path (`.spec-workflow/archive/specs/{name}/`) instead of the active specs path. This was missed during the multi-project dashboard implementation.
