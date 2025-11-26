@@ -3,51 +3,47 @@
 [![npm version](https://img.shields.io/npm/v/@pimzino/spec-workflow-mcp)](https://www.npmjs.com/package/@pimzino/spec-workflow-mcp)
 [![VSCode Extension](https://vsmarketplacebadges.dev/version-short/Pimzino.spec-workflow-mcp.svg)](https://marketplace.visualstudio.com/items?itemName=Pimzino.spec-workflow-mcp)
 
-A Model Context Protocol (MCP) server for structured spec-driven development with real-time dashboard and VSCode extension.
+一个 Model Context Protocol (MCP) 服务器，用于结构化的规格驱动开发，配备实时仪表板和 VSCode 扩展。
 
-## ☕ Support This Project
+## ☕ 支持本项目
 
 <a href="https://buymeacoffee.com/Pimzino" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-## 📺 Showcase
+## 📺 功能展示
 
-### 🔄 Approval System in Action
+### 🔄 审批系统演示
 <a href="https://www.youtube.com/watch?v=C-uEa3mfxd0" target="_blank">
   <img src="https://img.youtube.com/vi/C-uEa3mfxd0/maxresdefault.jpg" alt="Approval System Demo" width="600">
 </a>
 
-*See how the approval system works: create documents, request approval through the dashboard, provide feedback, and track revisions.*
+*了解审批系统的工作方式：创建文档、通过仪表板请求审批、提供反馈并跟踪修订。*
 
-### 📊 Dashboard & Spec Management
+### 📊 仪表板与规格管理
 <a href="https://www.youtube.com/watch?v=g9qfvjLUWf8" target="_blank">
   <img src="https://img.youtube.com/vi/g9qfvjLUWf8/maxresdefault.jpg" alt="Dashboard Demo" width="600">
 </a>
 
-*Explore the real-time dashboard: view specs, track progress, navigate documents, and monitor your development workflow.*
+*探索实时仪表板：查看规格、跟踪进度、浏览文档并监控开发工作流程。*
 
-## ✨ Key Features
+## ✨ 核心特性
 
-- **Structured Development Workflow** - Sequential spec creation (Requirements → Design → Tasks)
-- **Real-Time Web Dashboard** - Monitor specs, tasks, and progress with live updates
-- **VSCode Extension** - Integrated sidebar dashboard for VSCode users
-- **Approval Workflow** - Complete approval process with revisions
-- **Task Progress Tracking** - Visual progress bars and detailed status
-- **Implementation Logs** - Searchable logs of all task implementations with code statistics
-- **Multi-Language Support** - Available in 11 languages
+- **结构化开发工作流** - 顺序规格创建（需求 → 设计 → 任务）
+- **实时 Web 仪表板** - 通过实时更新监控规格、任务和进度
+- **VSCode 扩展** - 为 VSCode 用户提供集成侧边栏仪表板
+- **审批工作流** - 完整的审批流程，支持修订
+- **任务进度跟踪** - 可视化进度条和详细状态
+- **实现日志** - 所有任务实现的可搜索日志，包含代码统计
+- **多语言支持** - 支持 11 种语言
 
-## 🌍 Supported Languages
+## 🌍 支持的语言
 
 🇺🇸 English • 🇯🇵 日本語 • 🇨🇳 中文 • 🇪🇸 Español • 🇧🇷 Português • 🇩🇪 Deutsch • 🇫🇷 Français • 🇷🇺 Русский • 🇮🇹 Italiano • 🇰🇷 한국어 • 🇸🇦 العربية
 
-**📖 Documentation in your language:**
+## 🚀 快速开始
 
-[English](README.md) | [日本語](README.ja.md) | [中文](README.zh.md) | [Español](README.es.md) | [Português](README.pt.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Italiano](README.it.md) | [한국어](README.ko.md) | [العربية](README.ar.md)
+### 步骤 1：添加到您的 AI 工具
 
-## 🚀 Quick Start
-
-### Step 1: Add to your AI tool
-
-Add to your MCP configuration (see client-specific setup below):
+添加到您的 MCP 配置（请参阅下方特定客户端设置）：
 
 ```json
 {
@@ -60,38 +56,38 @@ Add to your MCP configuration (see client-specific setup below):
 }
 ```
 
-### Step 2: Choose your interface
+### 步骤 2：选择您的界面
 
-**Option A: Web Dashboard** (Required for CLI users)
-Start the dashboard (runs on port 5000 by default):
+**选项 A：Web 仪表板**（CLI 用户必需）
+启动仪表板（默认运行在端口 5000）：
 ```bash
 npx -y @pimzino/spec-workflow-mcp@latest --dashboard
 ```
 
-The dashboard will be accessible at: http://localhost:5000
+仪表板将可通过以下地址访问：http://localhost:5000
 
-> **Note:** Only one dashboard instance is needed. All your projects will connect to the same dashboard.
+> **注意：** 只需要一个仪表板实例。所有项目都将连接到同一个仪表板。
 
-**Option B: VSCode Extension** (Recommended for VSCode users)
+**选项 B：VSCode 扩展**（推荐给 VSCode 用户）
 
-Install [Spec Workflow MCP Extension](https://marketplace.visualstudio.com/items?itemName=Pimzino.spec-workflow-mcp) from the VSCode marketplace.
+从 VSCode 市场安装 [Spec Workflow MCP Extension](https://marketplace.visualstudio.com/items?itemName=Pimzino.spec-workflow-mcp)。
 
-## 📝 How to Use
+## 📝 使用方法
 
-Simply mention spec-workflow in your conversation:
+在对话中简单提及 spec-workflow：
 
-- **"Create a spec for user authentication"** - Creates complete spec workflow
-- **"List my specs"** - Shows all specs and their status
-- **"Execute task 1.2 in spec user-auth"** - Runs a specific task
+- **"创建一个用户认证的规格"** - 创建完整的规格工作流
+- **"列出我的所有规格"** - 显示所有规格及其状态
+- **"执行规格 user-auth 中的任务 1.2"** - 运行特定任务
 
-[See more examples →](docs/PROMPTING-GUIDE.md)
+[查看更多示例 →](docs/PROMPTING-GUIDE.zh.md)
 
-## 🔧 MCP Client Setup
+## 🔧 MCP 客户端设置
 
 <details>
 <summary><strong>Augment Code</strong></summary>
 
-Configure in your Augment settings:
+在您的 Augment 设置中配置：
 ```json
 {
   "mcpServers": {
@@ -107,17 +103,17 @@ Configure in your Augment settings:
 <details>
 <summary><strong>Claude Code CLI</strong></summary>
 
-Add to your MCP configuration:
+添加到您的 MCP 配置：
 ```bash
 claude mcp add spec-workflow npx @pimzino/spec-workflow-mcp@latest -- /path/to/your/project
 ```
 
-**Important Notes:**
-- The `-y` flag bypasses npm prompts for smoother installation
-- The `--` separator ensures the path is passed to the spec-workflow script, not to npx
-- Replace `/path/to/your/project` with your actual project directory path
+**重要说明：**
+- `-y` 标志绕过 npm 提示，使安装更流畅
+- `--` 分隔符确保路径传递给 spec-workflow 脚本，而不是 npx
+- 将 `/path/to/your/project` 替换为您的实际项目目录路径
 
-**Alternative for Windows (if the above doesn't work):**
+**Windows 替代方案（如果上述方法不起作用）：**
 ```bash
 claude mcp add spec-workflow cmd.exe /c "npx @pimzino/spec-workflow-mcp@latest /path/to/your/project"
 ```
@@ -126,7 +122,7 @@ claude mcp add spec-workflow cmd.exe /c "npx @pimzino/spec-workflow-mcp@latest /
 <details>
 <summary><strong>Claude Desktop</strong></summary>
 
-Add to `claude_desktop_config.json`:
+添加到 `claude_desktop_config.json`：
 ```json
 {
   "mcpServers": {
@@ -138,14 +134,14 @@ Add to `claude_desktop_config.json`:
 }
 ```
 
-> **Important:** Run the dashboard separately with `--dashboard` before starting the MCP server.
+> **重要：** 在启动 MCP 服务器之前，使用 `--dashboard` 单独运行仪表板。
 
 </details>
 
 <details>
 <summary><strong>Cline/Claude Dev</strong></summary>
 
-Add to your MCP server configuration:
+添加到您的 MCP 服务器配置：
 ```json
 {
   "mcpServers": {
@@ -161,7 +157,7 @@ Add to your MCP server configuration:
 <details>
 <summary><strong>Continue IDE Extension</strong></summary>
 
-Add to your Continue configuration:
+添加到您的 Continue 配置：
 ```json
 {
   "mcpServers": {
@@ -177,7 +173,7 @@ Add to your Continue configuration:
 <details>
 <summary><strong>Cursor IDE</strong></summary>
 
-Add to your Cursor settings (`settings.json`):
+添加到您的 Cursor 设置（`settings.json`）：
 ```json
 {
   "mcpServers": {
@@ -193,7 +189,7 @@ Add to your Cursor settings (`settings.json`):
 <details>
 <summary><strong>OpenCode</strong></summary>
 
-Add to your `opencode.json` configuration file:
+添加到您的 `opencode.json` 配置文件：
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
@@ -211,7 +207,7 @@ Add to your `opencode.json` configuration file:
 <details>
 <summary><strong>Windsurf</strong></summary>
 
-Add to your `~/.codeium/windsurf/mcp_config.json` configuration file:
+添加到您的 `~/.codeium/windsurf/mcp_config.json` 配置文件：
 ```json
 {
   "mcpServers": {
@@ -227,7 +223,7 @@ Add to your `~/.codeium/windsurf/mcp_config.json` configuration file:
 <details>
 <summary><strong>Codex</strong></summary>
 
-Add to your `~/.codex/config.toml` configuration file:
+添加到您的 `~/.codex/config.toml` 配置文件：
 ```toml
 [mcp_servers.spec-workflow]
 command = "npx"
@@ -235,46 +231,46 @@ args = ["-y", "@pimzino/spec-workflow-mcp@latest", "/path/to/your/project"]
 ```
 </details>
 
-## 🐳 Docker Deployment
+## 🐳 Docker 部署
 
-Run the dashboard in a Docker container for isolated deployment:
+在 Docker 容器中运行仪表板以实现隔离部署：
 
 ```bash
-# Using Docker Compose (recommended)
+# 使用 Docker Compose（推荐）
 cd containers
 docker-compose up --build
 
-# Or using Docker CLI
+# 或使用 Docker CLI
 docker build -f containers/Dockerfile -t spec-workflow-mcp .
 docker run -p 5000:5000 -v "./workspace/.spec-workflow:/workspace/.spec-workflow:rw" spec-workflow-mcp
 ```
 
-The dashboard will be available at: http://localhost:5000
+仪表板将可通过以下地址访问：http://localhost:5000
 
-[See Docker setup guide →](containers/README.md)
+[查看 Docker 设置指南 →](containers/README.md)
 
-## 🔒 Sandboxed Environments
+## 🔒 沙盒环境
 
-For sandboxed environments (e.g., Codex CLI with `sandbox_mode=workspace-write`) where `$HOME` is read-only, use the `SPEC_WORKFLOW_HOME` environment variable to redirect global state files to a writable location:
+对于沙盒环境（例如，使用 `sandbox_mode=workspace-write` 的 Codex CLI），其中 `$HOME` 为只读，使用 `SPEC_WORKFLOW_HOME` 环境变量将全局状态文件重定向到可写位置：
 
 ```bash
 SPEC_WORKFLOW_HOME=/workspace/.spec-workflow-mcp npx -y @pimzino/spec-workflow-mcp@latest /workspace
 ```
 
-[See Configuration Guide →](docs/CONFIGURATION.md#environment-variables)
+[查看配置指南 →](docs/CONFIGURATION.zh.md#environment-variables)
 
-## 📚 Documentation
+## 📚 文档
 
-- [Configuration Guide](docs/CONFIGURATION.md) - Command-line options, config files
-- [User Guide](docs/USER-GUIDE.md) - Comprehensive usage examples
-- [Workflow Process](docs/WORKFLOW.md) - Development workflow and best practices
-- [Interfaces Guide](docs/INTERFACES.md) - Dashboard and VSCode extension details
-- [Prompting Guide](docs/PROMPTING-GUIDE.md) - Advanced prompting examples
-- [Tools Reference](docs/TOOLS-REFERENCE.md) - Complete tools documentation
-- [Development](docs/DEVELOPMENT.md) - Contributing and development setup
-- [Troubleshooting](docs/TROUBLESHOOTING.md) - Common issues and solutions
+- [配置指南](docs/CONFIGURATION.zh.md) - 命令行选项、配置文件
+- [用户指南](docs/USER-GUIDE.zh.md) - 全面的使用示例
+- [工作流程](docs/WORKFLOW.zh.md) - 开发工作流程和最佳实践
+- [界面指南](docs/INTERFACES.zh.md) - 仪表板和 VSCode 扩展详情
+- [提示指南](docs/PROMPTING-GUIDE.zh.md) - 高级提示示例
+- [工具参考](docs/TOOLS-REFERENCE.zh.md) - 完整的工具文档
+- [开发指南](docs/DEVELOPMENT.zh.md) - 贡献和开发设置
+- [故障排除](docs/TROUBLESHOOTING.zh.md) - 常见问题和解决方案
 
-## 📁 Project Structure
+## 📁 项目结构
 
 ```
 your-project/
@@ -288,26 +284,26 @@ your-project/
     config.example.toml
 ```
 
-## 🛠️ Development
+## 🛠️ 开发
 
 ```bash
-# Install dependencies
+# 安装依赖
 npm install
 
-# Build the project
+# 构建项目
 npm run build
 
-# Run in development mode
+# 以开发模式运行
 npm run dev
 ```
 
-[See development guide →](docs/DEVELOPMENT.md)
+[查看开发指南 →](docs/DEVELOPMENT.zh.md)
 
-## 📄 License
+## 📄 许可证
 
 GPL-3.0
 
-## ⭐ Star History
+## ⭐ Star 历史
 
 <a href="https://www.star-history.com/#Pimzino/spec-workflow-mcp&Date">
  <picture>
