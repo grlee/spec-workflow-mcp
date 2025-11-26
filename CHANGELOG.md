@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.10] - 2025-11-26
+
+### Fixed
+- **Archived Specs Display Content Correctly** (PR #146) - Fixed critical bug where archived specs were not displaying content correctly in the dashboard:
+  - Added new API endpoint `/api/projects/:projectId/specs/:name/all/archived` that reads documents from the archive path (`.spec-workflow/archive/specs/{name}/`) instead of the active specs path. This was missed during the multi-project dashboard implementation.
+
 ## [2.0.9] - 2025-11-19
 
 ### Fixed
