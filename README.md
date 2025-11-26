@@ -220,6 +220,17 @@ Add to your `~/.codeium/windsurf/mcp_config.json` configuration file:
 ```
 </details>
 
+<details>
+<summary><strong>Codex</strong></summary>
+
+Add to your `~/.codex/config.toml` configuration file:
+```toml
+[mcp_servers.spec-workflow]
+command = "npx"
+args = ["-y", "@pimzino/spec-workflow-mcp@latest", "/path/to/your/project"]
+```
+</details>
+
 ## 🐳 Docker Deployment
 
 Run the dashboard in a Docker container for isolated deployment:
