@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.10] - 2025-11-26
 
 ### Added
+- **Claude Code Plugin Support** (PR #121) - Added official Claude Code plugin configuration for easy installation from the Claude marketplace:
+  - Two plugin variants available: `spec-workflow-mcp` (base) and `spec-workflow-mcp-with-dashboard` (auto-starts dashboard)
+  - Plugins use `@latest` tag for automatic updates to newest releases
+  - Added `npm run sync:plugin-version` script to keep plugin versions in sync with package.json
+  - Added `npm run check:plugin-version` for CI validation of version consistency
 - **`--no-open` Flag for Dashboard** (PR #147, fixes #145) - Added new command-line flag to prevent automatic browser opening when starting the dashboard:
   - Use `spec-workflow-mcp --dashboard --no-open` to start the dashboard without launching the browser
   - Useful in restricted Windows environments where firewall or antivirus software blocks browser launches from processes
